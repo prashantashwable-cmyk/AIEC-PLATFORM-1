@@ -43,7 +43,7 @@ export function LoginForm({ demoUsers }: { demoUsers: DemoUser[] }) {
                 <ActionForm action={demoLoginAction} hideSuccess>
                   <input type="hidden" name="userId" value={u.id} />
                   <button type="submit" data-testid={`demo-${u.roles[0]}`}
-                    className="flex w-full flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-200 bg-white px-3 py-2 text-left text-sm hover:border-brand-400">
+                    className="flex w-full flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-200 bg-surface px-3 py-2 text-left text-sm hover:border-brand-400">
                     <span className="font-medium text-slate-900">{u.full_name}{u.company ? <span className="font-normal text-slate-500"> · {u.company}</span> : null}</span>
                     <span className="flex flex-wrap gap-1">{u.roles.map((r) => <Badge key={r} tone="blue">{t(`e.role.${r}`)}</Badge>)}</span>
                   </button>

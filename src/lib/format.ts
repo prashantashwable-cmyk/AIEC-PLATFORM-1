@@ -3,21 +3,23 @@ import type { Locale } from './enums';
 // Latin digits are kept in every language so that amounts, phone numbers and
 // reference numbers read identically on screen, on invoices and in bank records.
 const INTL: Record<Locale, string> = { en: 'en-IN', hi: 'hi-IN-u-nu-latn', mr: 'mr-IN-u-nu-latn' };
+// Amounts always use Indian digit grouping (₹6,00,000) and Latin digits, whatever the UI language.
+const NUMBERS = 'en-IN';
 const TZ = 'Asia/Kolkata';
 
-export function formatINR(value: string | number | null | undefined, locale: Locale = 'en'): string {
+export function formatINR(value: string | number | null | undefined, _locale: Locale = 'en'): string {
   if (value === null || value === undefined || value === '') return '—';
   const n = typeof value === 'number' ? value : Number(value);
   if (!Number.isFinite(n)) return '—';
-  return new Intl.NumberFormat(INTL[locale], {
+  return new Intl.NumberFormat(NUMBERS, {
     style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 2,
   }).format(n);
 }
 
-export function formatNumber(value: string | number | null | undefined, locale: Locale = 'en'): string {
+export function formatNumber(value: string | number | null | undefined, _locale: Locale = 'en'): string {
   if (value === null || value === undefined || value === '') return '—';
   const n = Number(value);
-  return Number.isFinite(n) ? new Intl.NumberFormat(INTL[locale]).format(n) : '—';
+  return Number.isFinite(n) ? new Intl.NumberFormat(NUMBERS).format(n) : '—';
 }
 
 function toDate(value: Date | string | null | undefined): Date | null {

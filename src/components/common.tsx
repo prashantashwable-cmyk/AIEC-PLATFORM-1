@@ -12,7 +12,7 @@ export function enumOptions(t: TFunction, group: string, values: readonly string
 /** Filter form that works as a plain GET request (bookmarkable, no client state). */
 export function FilterBar({ children, submitLabel, resetHref, resetLabel }: { children: ReactNode; submitLabel: string; resetHref: string; resetLabel: string }) {
   return (
-    <form method="get" className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-3">
+    <form method="get" className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-surface p-3">
       {children}
       <button type="submit" className={buttonClass('primary', 'sm')}><Search className="size-4" aria-hidden />{submitLabel}</button>
       <a href={resetHref} className={buttonClass('ghost', 'sm')}>{resetLabel}</a>
@@ -20,7 +20,7 @@ export function FilterBar({ children, submitLabel, resetHref, resetLabel }: { ch
   );
 }
 
-const CONTROL = 'block rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900';
+const CONTROL = 'block rounded-lg border border-slate-300 bg-surface px-2.5 py-1.5 text-sm text-slate-900';
 export function FilterSelect({
   name, label, value, options, allLabel,
 }: { name: string; label: string; value?: string; options: Array<{ value: string; label: string }>; allLabel: string }) {

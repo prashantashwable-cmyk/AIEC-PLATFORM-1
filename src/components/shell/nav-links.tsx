@@ -33,14 +33,14 @@ export function NavLinks({
               data-nav={item.key}
               className={cn(
                 'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                active ? 'bg-white/15 text-white' : 'text-brand-100 hover:bg-white/10 hover:text-white',
+                active ? 'bg-sidebar-active font-semibold text-sidebar-strong' : 'text-sidebar-fg hover:bg-sidebar-active hover:text-sidebar-strong',
                 horizontal && 'whitespace-nowrap',
               )}
             >
               <Icon className="size-4 shrink-0" aria-hidden />
               <span className="min-w-0 flex-1">{item.label}</span>
               {item.key === 'notifications' && unread > 0 && (
-                <span className="rounded-full bg-accent-500 px-1.5 text-xs font-semibold text-slate-950">{unread}</span>
+                <span className="rounded-full bg-accent-500 px-1.5 text-xs font-semibold text-on-accent">{unread}</span>
               )}
             </Link>
           </li>

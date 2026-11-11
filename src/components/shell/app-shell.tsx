@@ -21,19 +21,19 @@ export async function AppShell({ portal, ctx, children }: { portal: Portal; ctx:
 
   return (
     <div className="min-h-screen lg:flex">
-      <aside className="hidden w-64 shrink-0 flex-col bg-brand-950 lg:flex">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-sidebar text-sidebar-fg backdrop-blur lg:flex">
         <div className="px-4 py-4">
-          <Link href={`/${portal}`}><Logo dark tagline={t(`portal.${portal}`)} /></Link>
+          <Link href={`/${portal}`} className="text-sidebar-strong"><Logo tagline={t(`portal.${portal}`)} /></Link>
         </div>
         <nav className="flex-1 overflow-y-auto px-2 pb-4" aria-label={t('common.menu')}>
           <NavLinks items={items} unread={unread} />
         </nav>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white">
+        <header className="sticky top-0 z-20 border-b border-slate-200 bg-surface backdrop-blur">
           <div className="flex items-center justify-between gap-3 px-4 py-2.5">
             <div className="flex min-w-0 items-center gap-3">
-              <Link href={`/${portal}`} className="lg:hidden"><Logo /></Link>
+              <Link href={`/${portal}`} className="text-slate-900 lg:hidden"><Logo /></Link>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-slate-900" data-testid="user-name">{ctx.name}</p>
                 <p className="truncate text-xs text-slate-500">{[subtitle, roleLabel].filter(Boolean).join(' · ')}</p>
@@ -50,7 +50,7 @@ export async function AppShell({ portal, ctx, children }: { portal: Portal; ctx:
             </div>
           </div>
           <div className="border-t border-slate-100 px-4 py-1.5 md:hidden"><LanguageSwitcher /></div>
-          <nav className="bg-brand-950 lg:hidden" aria-label={t('common.menu')}>
+          <nav className="border-t border-slate-200 bg-sidebar text-sidebar-fg lg:hidden" aria-label={t('common.menu')}>
             <NavLinks items={items} unread={unread} horizontal />
           </nav>
         </header>

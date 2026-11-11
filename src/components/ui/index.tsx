@@ -6,9 +6,9 @@ import { cn } from '@/lib/format';
 const BTN_BASE =
   'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50';
 const BTN_VARIANT = {
-  primary: 'bg-brand-600 text-white hover:bg-brand-700',
-  accent: 'bg-accent-500 text-slate-950 hover:bg-accent-400',
-  secondary: 'border border-slate-300 bg-white text-slate-800 hover:bg-slate-50',
+  primary: 'bg-brand-600 text-on-brand hover:bg-brand-700',
+  accent: 'bg-accent-500 text-on-accent hover:bg-accent-600',
+  secondary: 'border border-slate-300 bg-surface text-slate-800 hover:bg-slate-50',
   ghost: 'text-slate-700 hover:bg-slate-100',
   danger: 'bg-red-600 text-white hover:bg-red-700',
   success: 'bg-emerald-600 text-white hover:bg-emerald-700',
@@ -35,7 +35,7 @@ export function LinkButton({
 
 export function Card({ className, children, ...props }: ComponentProps<'div'>) {
   return (
-    <div className={cn('rounded-xl border border-slate-200 bg-white shadow-sm', className)} {...props}>
+    <div className={cn('rounded-xl border border-slate-200 bg-surface shadow-sm', className)} {...props}>
       {children}
     </div>
   );
