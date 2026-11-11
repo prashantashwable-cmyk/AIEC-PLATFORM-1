@@ -91,7 +91,7 @@ begin
     'app.customer_id() is not null and exists (select 1 from quotations q where q.company_id = company_licenses.company_id)');
   perform app.protect('company_insurance_policies', i || ' or ' || cnt,
     'app.customer_id() is not null and exists (select 1 from quotations q where q.company_id = company_insurance_policies.company_id)');
-  perform app.protect('company_verification_reviews', i, cnt);
+  perform app.protect('company_verification_reviews', i || ' or (' || cnt || ' and to_status = ''SUBMITTED'')', cnt);
   perform app.protect('partner_capabilities', i || ' or ' || cnt, 'true');
   perform app.protect('partner_service_areas', i || ' or ' || cnt, 'true');
   perform app.protect('partner_performance_events', i, cnt);
