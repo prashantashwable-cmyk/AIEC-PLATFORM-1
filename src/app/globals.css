@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter Variable", "Noto Sans Devanagari Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #dbe6fe;
+  --color-brand-200: #bfd3fe;
+  --color-brand-300: #93b4fd;
+  --color-brand-400: #5f8df8;
+  --color-brand-500: #3a6ae8;
+  --color-brand-600: #2450c9;
+  --color-brand-700: #1d3fa3;
+  --color-brand-800: #193582;
+  --color-brand-900: #122659;
+  --color-brand-950: #0b173a;
+  --color-accent-400: #fbb040;
+  --color-accent-500: #f59316;
+  --color-accent-600: #d9730a;
+}
+
+html { scroll-behavior: smooth; }
+body { @apply bg-slate-50 text-slate-900 antialiased; }
+/* Devanagari glyphs carry matras above and below the line: give them room. */
+html:lang(hi) body, html:lang(mr) body { line-height: 1.7; }
+html:lang(hi) h1, html:lang(mr) h1, html:lang(hi) h2, html:lang(mr) h2 { line-height: 1.4; }
+:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }

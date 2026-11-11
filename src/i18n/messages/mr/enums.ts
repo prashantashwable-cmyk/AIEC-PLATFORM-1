@@ -1,0 +1,127 @@
+export const enums = {
+  leadStatus: {
+    NEW: 'नवीन', CONTACTED: 'संपर्क झाला', QUALIFIED: 'पात्र', SURVEY_PENDING: 'सर्व्हे प्रलंबित',
+    SURVEY_COMPLETED: 'सर्व्हे पूर्ण', PARTNER_MATCHING: 'पार्टनर जुळवणी', QUOTATION_PENDING: 'कोटेशन प्रलंबित',
+    QUOTATION_RECEIVED: 'कोटेशन मिळाले', CUSTOMER_REVIEW: 'ग्राहक पुनरावलोकन', NEGOTIATION: 'वाटाघाटी',
+    SELECTED: 'पार्टनर निवडला', ORDER_PENDING: 'ऑर्डर प्रलंबित', CONFIRMED: 'ऑर्डर निश्चित', LOST: 'गमावली',
+    ON_HOLD: 'थांबवली', DUPLICATE: 'डुप्लिकेट', DISQUALIFIED: 'अपात्र', CANCELLED: 'रद्द',
+  },
+  leadSource: {
+    WEBSITE: 'वेबसाइट', CUSTOMER_APP: 'ग्राहक ॲप', WHATSAPP: 'WhatsApp', PHONE: 'फोन कॉल',
+    BUILDER_REFERRAL: 'बिल्डर रेफरल', ARCHITECT_REFERRAL: 'आर्किटेक्ट रेफरल', SURVEYOR: 'सर्व्हेअर',
+    DIGITAL_ADS: 'डिजिटल जाहिराती', CUSTOMER_REFERRAL: 'विद्यमान ग्राहकाचा रेफरल',
+  },
+  customerType: {
+    INDIVIDUAL_OWNER: 'वैयक्तिक मालमत्ता मालक', BUILDER: 'बिल्डर / डेव्हलपर', HOUSING_SOCIETY: 'गृहनिर्माण संस्था',
+    ARCHITECT: 'आर्किटेक्ट / सल्लागार', COMMERCIAL_OWNER: 'व्यावसायिक मालमत्ता मालक',
+  },
+  buildingType: {
+    RESIDENTIAL_BUNGALOW: 'बंगला / रो हाऊस', RESIDENTIAL_APARTMENT: 'निवासी अपार्टमेंट', COMMERCIAL: 'व्यावसायिक इमारत',
+    HOSPITAL: 'रुग्णालय', INDUSTRIAL: 'औद्योगिक', MIXED_USE: 'मिश्र वापर', OTHER: 'इतर',
+  },
+  liftCategory: {
+    PASSENGER_RESIDENTIAL: 'प्रवासी लिफ्ट (निवासी)', PASSENGER_COMMERCIAL: 'प्रवासी लिफ्ट (व्यावसायिक)', HOME_LIFT: 'होम लिफ्ट',
+    GOODS: 'मालवाहू लिफ्ट', HOSPITAL_BED: 'रुग्णालय / बेड लिफ्ट', FIRE_SERVICE: 'फायर-सर्व्हिस लिफ्ट', CUSTOM: 'कस्टम-इंजिनिअर्ड लिफ्ट',
+  },
+  timeline: {
+    IMMEDIATE: 'लगेच', ONE_TO_THREE_MONTHS: '1–3 महिन्यांत', THREE_TO_SIX_MONTHS: '3–6 महिन्यांत',
+    SIX_PLUS_MONTHS: '6 महिन्यांनंतर', UNDECIDED: 'अद्याप ठरलेले नाही',
+  },
+  siteReadiness: {
+    NOT_STARTED: 'बांधकाम सुरू झालेले नाही', UNDER_CONSTRUCTION: 'बांधकाम सुरू आहे', SHAFT_READY: 'लिफ्ट शाफ्ट तयार',
+    EXISTING_BUILDING: 'विद्यमान इमारत', UNKNOWN: 'खात्री नाही',
+  },
+  surveyStatus: {
+    SCHEDULED: 'नियोजित', IN_PROGRESS: 'सुरू आहे', SUBMITTED: 'सबमिट केले', REVIEWED: 'पुनरावलोकन पूर्ण',
+    REWORK_REQUIRED: 'पुन्हा काम आवश्यक', CANCELLED: 'रद्द',
+  },
+  companyCategory: {
+    ELEVATOR_COMPANY: 'परवानाधारक एलिव्हेटर कंपनी', MANUFACTURER: 'उत्पादक / OEM', SUPPLIER: 'घटक पुरवठादार',
+    INSTALLATION_SUBCONTRACTOR: 'इन्स्टॉलेशन उप-कंत्राटदार', SERVICE_PROVIDER: 'सर्व्हिस / AMC पुरवठादार', QC_PROVIDER: 'स्वतंत्र QC पुरवठादार',
+  },
+  entityType: {
+    PROPRIETORSHIP: 'प्रोप्रायटरशिप', PARTNERSHIP: 'भागीदारी', LLP: 'LLP', PRIVATE_LIMITED: 'प्रायव्हेट लिमिटेड',
+    PUBLIC_LIMITED: 'पब्लिक लिमिटेड', OTHER: 'इतर',
+  },
+  partnerStatus: {
+    DRAFT: 'मसुदा', SUBMITTED: 'सबमिट केले', UNDER_REVIEW: 'पुनरावलोकनाधीन', VERIFIED: 'पडताळले', ACTIVE: 'सक्रिय',
+    REJECTED: 'नाकारले', SUSPENDED: 'निलंबित', EXPIRED: 'मुदत संपली', UNDER_RENEWAL: 'नूतनीकरण सुरू', TERMINATED: 'संपुष्टात आले',
+  },
+  partnerGrade: { UNGRADED: 'श्रेणी दिलेली नाही', SILVER: 'सिल्व्हर', GOLD: 'गोल्ड', PLATINUM: 'प्लॅटिनम' },
+  licenseType: { LIFT_CONTRACTOR: 'लिफ्ट कंत्राटदार परवाना', ELECTRICAL_CONTRACTOR: 'विद्युत कंत्राटदार परवाना', OTHER: 'इतर अधिकृतता' },
+  insuranceType: {
+    PUBLIC_LIABILITY: 'सार्वजनिक दायित्व', WORKMEN_COMPENSATION: 'कामगार नुकसानभरपाई', CONTRACTOR_ALL_RISK: 'कॉन्ट्रॅक्टर ऑल-रिस्क', OTHER: 'इतर',
+  },
+  verificationStatus: { PENDING: 'पुनरावलोकन प्रलंबित', VERIFIED: 'पडताळले', REJECTED: 'नाकारले' },
+  matchStatus: { SUGGESTED: 'सुचवलेले', INVITED: 'आमंत्रित', ACCEPTED: 'स्वीकारले', DECLINED: 'नाकारले', EXPIRED: 'मुदत संपली' },
+  quotationStatus: {
+    DRAFT: 'मसुदा', SUBMITTED: 'सबमिट केले', REVISION_REQUESTED: 'सुधारणा मागितली', CLARIFICATION_REQUESTED: 'स्पष्टीकरण मागितले',
+    SELECTED: 'निवडले', NOT_SELECTED: 'निवडले नाही', WITHDRAWN: 'मागे घेतले', EXPIRED: 'मुदत संपली',
+  },
+  selectionAction: {
+    SELECT: 'पार्टनर निवडला', NEGOTIATE: 'वाटाघाटीची विनंती', CLARIFY: 'स्पष्टीकरणाची विनंती',
+    REQUEST_ANOTHER: 'आणखी एका कोटेशनची विनंती', REJECT_ALL: 'सर्व कोटेशन नाकारली', HOLD: 'थांबवले',
+  },
+  orderStatus: {
+    PENDING_PARTNER_ACCEPTANCE: 'पार्टनरच्या स्वीकृतीची प्रतीक्षा', PARTNER_ACCEPTED: 'पार्टनरने स्वीकारले', PARTNER_DECLINED: 'पार्टनरने नाकारले',
+    CONFIRMED: 'निश्चित झाली', ON_HOLD: 'थांबवली', COMPLETED: 'पूर्ण', CANCELLED: 'रद्द',
+  },
+  projectStatus: {
+    PLANNING: 'नियोजन', IN_PROGRESS: 'काम सुरू', ON_HOLD: 'थांबवले', STOP_WORK: 'काम बंद', QC: 'गुणवत्ता तपासणी',
+    HANDOVER_PENDING: 'हस्तांतरण प्रलंबित', HANDED_OVER: 'हस्तांतरित', CLOSED: 'बंद', CANCELLED: 'रद्द',
+  },
+  milestoneStatus: { PENDING: 'प्रलंबित', IN_PROGRESS: 'सुरू आहे', COMPLETED: 'पूर्ण' },
+  taskStatus: { TODO: 'करायचे आहे', IN_PROGRESS: 'सुरू आहे', DONE_PENDING_REVIEW: 'पूर्ण – पुनरावलोकनाची प्रतीक्षा', APPROVED: 'मंजूर', REWORK: 'पुन्हा काम आवश्यक' },
+  materialStatus: { PLANNED: 'नियोजित', ORDERED: 'ऑर्डर केले', DISPATCHED: 'पाठवले', DELIVERED: 'पोहोचले' },
+  collectionStatus: {
+    PENDING_EVIDENCE: 'पुरावा प्रलंबित', SUBMITTED: 'सबमिट केले', UNDER_REVIEW: 'पुनरावलोकनाधीन', VERIFIED: 'पडताळले',
+    REJECTED: 'नाकारले', DISPUTED: 'वादग्रस्त', REFUNDED: 'परतावा दिला',
+  },
+  paymentMode: {
+    BANK_TRANSFER: 'बँक ट्रान्सफर (NEFT/RTGS/IMPS)', UPI: 'UPI', CHEQUE: 'धनादेश', DEMAND_DRAFT: 'डिमांड ड्राफ्ट', CASH: 'रोख',
+    LOAN_DISBURSEMENT: 'कर्जदात्याकडून वितरण', OTHER: 'इतर',
+  },
+  evidenceKind: { BANK_PROOF: 'बँक पुरावा', PARTNER_RECEIPT: 'पार्टनर पावती', SCREENSHOT: 'स्क्रीनशॉट', OTHER: 'इतर' },
+  ledgerStatus: { VERIFIED: 'पडताळले', INVOICED: 'इनव्हॉइस केले', DUE: 'देय', PAID: 'पेमेंट झाले', DISPUTED: 'वादग्रस्त' },
+  ledgerType: { COMMISSION: 'कमिशन', ADJUSTMENT: 'समायोजन', REFUND_REVERSAL: 'परतावा उलट नोंद' },
+  invoiceStatus: { ISSUED: 'जारी', DUE: 'थकीत', PAID: 'पेमेंट झाले', CANCELLED: 'रद्द' },
+  referralStatus: {
+    CONSENT_PENDING: 'संमती प्रलंबित', CONSENTED: 'संमती दिली', READY_TO_REFER: 'रेफरसाठी तयार', REFERRED: 'कर्जदात्याकडे रेफर केले',
+    LENDER_CONTACTED: 'कर्जदात्याने ग्राहकाशी संपर्क साधला', APPLICATION_IN_PROGRESS: 'अर्ज प्रक्रियेत', APPROVED: 'कर्जदात्याने मंजूर केले',
+    REJECTED: 'कर्जदात्याने नाकारले', WITHDRAWN: 'संमती मागे घेतली', EXPIRED: 'मुदत संपली',
+  },
+  statusSource: { LENDER: 'कर्जदात्याने कळवले', CUSTOMER: 'ग्राहकाने खात्री केली' },
+  lenderType: { BANK: 'बँक', NBFC: 'RBI-नियंत्रित NBFC', HFC: 'गृहवित्त कंपनी', OTHER: 'इतर नियंत्रित संस्था' },
+  agreementStatus: { NONE: 'करार नाही', IN_NEGOTIATION: 'वाटाघाटी सुरू', SIGNED: 'स्वाक्षरी झाली', EXPIRED: 'मुदत संपली' },
+  integrationStatus: { SANDBOX: 'सँडबॉक्स (खरे नाही)', MANUAL: 'मॅन्युअल हँडऑफ', LIVE: 'लाइव्ह इंटिग्रेशन' },
+  contactPreference: { PHONE: 'फोन कॉल', WHATSAPP: 'WhatsApp', EMAIL: 'ईमेल' },
+  complianceDocType: {
+    ERECTION_PERMISSION: 'उभारणी (इरेक्शन) परवानगी', APPROVED_DRAWINGS: 'मंजूर रेखाचित्रे', INSPECTION_REPORT: 'तपासणी अहवाल',
+    WORKING_LICENCE: 'कार्य (वर्किंग) परवाना', MAINTENANCE_RECORD: 'देखभाल नोंद', SAFETY_AUDIT: 'सुरक्षा ऑडिट नोंद',
+    INCIDENT_REPORT: 'घटना अहवाल', PRODUCT_CERTIFICATE: 'उत्पादन प्रमाणपत्र', WARRANTY_RECORD: 'वॉरंटी नोंद',
+    STATE_SPECIFIC: 'राज्य-विशिष्ट कागदपत्र',
+  },
+  complianceGate: { PROJECT_START: 'काम सुरू होण्यापूर्वी', HANDOVER: 'हस्तांतरणापूर्वी' },
+  sourceVerification: { UNVERIFIED: 'अद्याप पडताळलेले नाही', VERIFIED: 'पडताळले' },
+  qcResult: { PASS: 'उत्तीर्ण', FAIL: 'अनुत्तीर्ण', CONDITIONAL: 'सशर्त' },
+  severity: { LOW: 'कमी', MEDIUM: 'मध्यम', HIGH: 'उच्च', CRITICAL: 'गंभीर' },
+  defectStatus: { OPEN: 'खुला', CORRECTIVE_ACTION: 'सुधारात्मक कृती', RESOLVED: 'निराकरण झाले', CLOSED: 'बंद' },
+  correctiveStatus: { OPEN: 'खुली', DONE: 'पूर्ण', VERIFIED: 'पडताळले' },
+  incidentStatus: {
+    REPORTED: 'नोंदवली', TRIAGED: 'प्राथमिक तपासणी पूर्ण', EMERGENCY_ESCALATION: 'आपत्कालीन एस्केलेशन', INVESTIGATION: 'चौकशी सुरू',
+    CORRECTIVE_ACTION: 'सुधारात्मक कृती', REVIEWED: 'पुनरावलोकन पूर्ण', CLOSED: 'बंद',
+  },
+  ticketKind: { BREAKDOWN: 'बिघाड', MAINTENANCE: 'देखभाल भेट', WARRANTY_CLAIM: 'वॉरंटी दावा', COMPLAINT: 'तक्रार' },
+  ticketPriority: { NORMAL: 'सामान्य', EMERGENCY: 'आपत्कालीन' },
+  ticketStatus: { OPEN: 'खुले', ACKNOWLEDGED: 'दखल घेतली', ASSIGNED: 'नेमून दिले', IN_PROGRESS: 'सुरू आहे', RESOLVED: 'निराकरण झाले', CLOSED: 'बंद' },
+  amcStatus: { ACTIVE: 'सक्रिय', EXPIRED: 'मुदत संपली', CANCELLED: 'रद्द' },
+  disputeKind: { PAYMENT: 'पेमेंट', COMMISSION: 'कमिशन', QUALITY: 'गुणवत्ता', SERVICE: 'सर्व्हिस', OTHER: 'इतर' },
+  disputeStatus: { OPEN: 'खुला', UNDER_REVIEW: 'पुनरावलोकनाधीन', RESOLVED: 'निराकरण झाले', REJECTED: 'नाकारले' },
+  role: {
+    SUPER_ADMIN: 'सुपर ॲडमिन / मालक', OPS_MANAGER: 'ऑपरेशन्स मॅनेजर', CITY_MANAGER: 'सिटी मॅनेजर', SALES_EXEC: 'सेल्स / लीड एक्झिक्युटिव्ह',
+    SURVEYOR: 'सर्व्हेअर', FINANCE_COORD: 'फायनान्स रेफरल समन्वयक', QC_COORD: 'QC / तपासणी समन्वयक',
+    PARTNER_ADMIN: 'पार्टनर कंपनी ॲडमिन', PARTNER_SUPERVISOR: 'पार्टनर सुपरवायझर', TECHNICIAN: 'तंत्रज्ञ',
+    SUPPLIER: 'उत्पादक / पुरवठादार', SERVICE_PARTNER: 'सर्व्हिस पार्टनर', CUSTOMER: 'ग्राहक',
+  },
+  syncStatus: { PENDING: 'प्रलंबित', SYNCED: 'सिंक झाले', FAILED: 'अयशस्वी' },
+};
