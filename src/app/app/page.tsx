@@ -42,7 +42,7 @@ export default async function AppHome({ searchParams }: { searchParams: Promise<
             </Link>
           );
         })}
-        <Link href="/partner/onboarding" className="text-sm font-medium text-brand-700 hover:underline">{t('portal.registerPartner')}</Link>
+        {!ctx.companyId && !ctx.isInternal && <Link href="/onboarding/partner" className="text-sm font-medium text-brand-700 hover:underline">{t('portal.registerPartner')}</Link>}
       </div>
     </main>
   );

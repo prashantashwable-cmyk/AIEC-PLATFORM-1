@@ -16,6 +16,7 @@ import * as matching from '@/server/services/matching';
 import * as money from '@/server/services/money';
 import { markNotificationsRead } from '@/server/services/notifications';
 import * as orders from '@/server/services/orders';
+import * as partnerhome from '@/server/services/partnerhome';
 import * as partners from '@/server/services/partners';
 import * as projects from '@/server/services/projects';
 import * as quality from '@/server/services/quality';
@@ -350,4 +351,12 @@ export async function dataRequestAction(_p: ActionResult, fd: FormData): R {
 }
 export async function markReadAction(_p: ActionResult, fd: FormData): R {
   return runAction(z.object({ id: zUuid.optional(), all: zBool }), fd, (i, ctx) => markNotificationsRead(ctx, i.all ? undefined : i.id));
+}
+
+// ───────────── catalogue ─────────────
+export async function productAction(_p: ActionResult, fd: FormData): R {
+  return runAction(partnerhome.productSchema.extend({ file: z.instanceof(File).optional() }), fd, async (i, ctx) => partnerhome.saveProduct(ctx, i, await fileFromForm(i.file)));
+}
+export async function productActiveAction(_p: ActionResult, fd: FormData): R {
+  return runAction(z.object({ id: zUuid, active: yesNo }), fd, (i, ctx) => partnerhome.setProductActive(ctx, i.id, i.active === 'yes'));
 }
