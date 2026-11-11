@@ -238,7 +238,7 @@ export async function getComparison(ctx: Ctx, leadId: string) {
   const scores = data.quotations.length ? await withSystem((tx) => tx.query<{ company_id: string; score: string | null }>(
     'select company_id, score::text from partner_matches where lead_id = $1 and company_id = any($2::uuid[])', [leadId, data.quotations.map((q) => q.company_id)])) : [];
   const byCompany = new Map(scores.map((s) => [s.company_id, s.score]));
-  return { ...data, quotations: data.quotations.map((q) => ({ ...q, advisory_score: byCompany.get(q.company_id) ?? null })) };
+  return { ...data, quotations: data.quotations.map((q): Rec => ({ ...q, advisory_score: byCompany.get(q.company_id) ?? null })) };
 }
 
 export const customerActionSchema = z.object({ leadId: zUuid, action: zEnum(SELECTION_ACTION), quotationId: zUuid.optional(), note: zOptText(1000) });
