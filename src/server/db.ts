@@ -52,13 +52,22 @@ function mapPgError(error: unknown): unknown {
 }
 
 function wrap(client: PoolClient): Tx {
-  const query = async <T>(sql: string, params: unknown[] = []): Promise<T[]> => {
-    try {
-      return (await client.query(sql, params)).rows as T[];
-    } catch (error) {
-      throw mapPgError(error);
-    }
+  // One connection runs one statement at a time. Callers may issue reads with Promise.all,
+  // so statements are queued here and executed strictly in order.
+  let queue: Promise<unknown> = Promise.resolve();
+  const serial = <R>(task: () => Promise<R>): Promise<R> => {
+    const result = queue.then(task);
+    queue = result.catch(() => undefined);
+    return result;
   };
+  const query = <T>(sql: string, params: unknown[] = []): Promise<T[]> =>
+    serial(async () => {
+      try {
+        return (await client.query(sql, params)).rows as T[];
+      } catch (error) {
+        throw mapPgError(error);
+      }
+    });
   return {
     query,
     async one<T>(sql: string, params?: unknown[]) {
@@ -69,12 +78,14 @@ function wrap(client: PoolClient): Tx {
     async maybeOne<T>(sql: string, params?: unknown[]) {
       return (await query<T>(sql, params))[0] ?? null;
     },
-    async exec(sql: string, params: unknown[] = []) {
-      try {
-        return (await client.query(sql, params)).rowCount ?? 0;
-      } catch (error) {
-        throw mapPgError(error);
-      }
+    exec(sql: string, params: unknown[] = []) {
+      return serial(async () => {
+        try {
+          return (await client.query(sql, params)).rowCount ?? 0;
+        } catch (error) {
+          throw mapPgError(error);
+        }
+      });
     },
   };
 }
