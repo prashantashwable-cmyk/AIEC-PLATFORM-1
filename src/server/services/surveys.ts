@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { PAGE_SIZE } from '@/lib/config';
 import { AppError } from '@/lib/errors';
-import { istLocalToDate, zBool, zDateTime, zInt, zNumber, zOptText, zText, zUuid } from '@/lib/validation';
+import { istLocalToDate, zBool, zDateTime, zInt, zNumber, zOptText, zUuid } from '@/lib/validation';
 import { audit, notifyCustomer, notifyPermission, notifyUsers } from '../audit';
 import { can, canAny, requirePerm, type Ctx } from '../ctx';
 import { withCtx, type Rec, type Tx } from '../db';

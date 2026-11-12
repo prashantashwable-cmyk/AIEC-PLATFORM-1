@@ -1,15 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import { reportIncidentAction } from '@/app/actions/app';
 import { ActionForm, Field, SelectField, SubmitButton, TextareaField } from '@/components/ui/form';
 import { Alert } from '@/components/ui';
 import { useT } from '@/i18n/client';
 import { SEVERITY } from '@/lib/enums';
+import { nowMs } from '@/lib/format';
 
 /** Incident / hazard report. HIGH and CRITICAL reports escalate immediately and stop work on the project. */
 export function IncidentForm({ projects }: { projects: Array<{ id: string; label: string }> }) {
   const t = useT();
-  const now = new Date(Date.now() + 5.5 * 3600_000).toISOString().slice(0, 16);
+  const [now] = useState(() => new Date(nowMs() + 5.5 * 3600_000).toISOString().slice(0, 16));
   return (
     <ActionForm action={reportIncidentAction} className="space-y-3">
       <Alert tone="red">{t('m.emergencyFirst')}</Alert>

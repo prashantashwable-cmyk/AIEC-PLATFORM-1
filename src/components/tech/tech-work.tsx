@@ -28,15 +28,18 @@ function position(): Promise<{ latitude: number | null; longitude: number | null
 export function TechWork({ initial }: { initial: Work }) {
   const { t, locale } = useI18n();
   const { items, enqueue } = useOffline();
-  const [work, setWork] = useState<Work>(initial);
-  const [fromCache, setFromCache] = useState<string | null>(null);
+  const [cached, setCached] = useState<{ value: Work; savedAt: string } | null>(null);
+  // The server copy wins whenever it has data; the device copy is only shown when the server copy is empty and we are offline.
+  const useCached = cached !== null && !initial.tasks.length && !initial.projects.length;
+  const work = useCached ? cached.value : initial;
+  const fromCache = useCached ? cached.savedAt : null;
   const [message, setMessage] = useState<string | null>(null);
 
   // Keep the latest server copy on the device so the list is still available without a connection.
-  useEffect(() => { setWork(initial); setFromCache(null); void cacheStore.set('work', initial); }, [initial]);
+  useEffect(() => { if (initial.tasks.length || initial.projects.length) void cacheStore.set('work', initial); }, [initial]);
   useEffect(() => {
     if (initial.tasks.length || initial.projects.length) return;
-    void cacheStore.get<Work>('work').then((cached) => { if (cached && !navigator.onLine) { setWork(cached.value); setFromCache(cached.savedAt); } });
+    void cacheStore.get<Work>('work').then((saved) => { if (saved && !navigator.onLine) setCached({ value: saved.value, savedAt: saved.savedAt }); });
   }, [initial]);
 
   // Show queued-but-unsynced task changes immediately.

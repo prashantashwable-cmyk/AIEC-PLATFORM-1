@@ -13,7 +13,7 @@ export type DuplicateReason = 'SAME_PHONE' | 'SIMILAR_PROJECT_NAME' | 'SIMILAR_A
 export const DUPLICATE_THRESHOLD = 50;
 
 function tokens(text: string): Set<string> {
-  return new Set(text.toLowerCase().normalize('NFKC').replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter((t) => t.length > 1));
+  return new Set(text.toLowerCase().normalize('NFKC').replace(/[^\p{L}\p{M}\p{N}\s]/gu, ' ').split(/\s+/).filter((t) => t.length > 1));
 }
 export function similarity(a: string, b: string): number {
   const ta = tokens(a);

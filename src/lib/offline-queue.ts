@@ -17,7 +17,7 @@ export interface QueueItem {
 }
 
 const DB_NAME = 'aiec-tech';
-const STORES = ['queue', 'cache'] as const;
+type StoreName = 'queue' | 'cache';
 
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ function openDb(): Promise<IDBDatabase> {
     request.onerror = () => reject(request.error);
   });
 }
-async function run<T>(store: (typeof STORES)[number], mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest<T>): Promise<T> {
+async function run<T>(store: StoreName, mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest<T>): Promise<T> {
   const db = await openDb();
   try {
     return await new Promise<T>((resolve, reject) => {

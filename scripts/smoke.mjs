@@ -35,12 +35,14 @@ const visit = async (raw) => {
   await page.waitForTimeout(400);
   const text = await page.locator('body').innerText();
   const rawKeys = [...new Set(text.match(/\b(?:[a-z]{1,10}\.)+[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Z_]+)?\b/g) ?? [])]
-    .filter((k) => /^(common|site|landing|footer|zone|auth|enquiry|privacy|err|e|portal|nav|f|a|p|m|n|q|gate|dup|og|set)\./.test(k));
+    .filter((k) => /^(common|site|landing|footer|zone|auth|enquiry|privacy|err|e|portal|nav|f|a|p|m|n|q|gate|dup|og|set)\./.test(k))
+    .filter((k) => !(path === '/admin/audit' && /^[a-z]+\.[a-z_]+$/.test(k))); // audit action codes such as auth.login are data, not untranslated keys
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   const status = res?.status() ?? 0;
-  const bad = status >= 400 || errors.length || overflow > 1 || rawKeys.length;
+  const notFound = /^404\b/m.test(text) && (await page.locator('main p.text-5xl').count()) > 0;
+  const bad = status >= 400 || errors.length || overflow > 1 || rawKeys.length || notFound;
   if (bad) failed++;
-  console.log(`${bad ? 'FAIL' : 'ok  '} ${status} ${path}${mobile ? ' (mobile)' : ''}${overflow > 1 ? ` overflowX=${overflow}` : ''}${rawKeys.length ? ` RAW_KEYS=${rawKeys.slice(0, 12).join(',')}${rawKeys.length > 12 ? `…(+${rawKeys.length - 12})` : ''}` : ''}${errors.length ? ` ERRORS=${errors.slice(0, 3).join(' | ')}` : ''}`);
+  console.log(`${bad ? 'FAIL' : 'ok  '} ${notFound ? 'NOT-FOUND' : status} ${path}${mobile ? ' (mobile)' : ''}${overflow > 1 ? ` overflowX=${overflow}` : ''}${rawKeys.length ? ` RAW_KEYS=${rawKeys.slice(0, 12).join(',')}${rawKeys.length > 12 ? `…(+${rawKeys.length - 12})` : ''}` : ''}${errors.length ? ` ERRORS=${errors.slice(0, 3).join(' | ')}` : ''}`);
   if (outDir !== '-') await page.screenshot({ path: `${outDir}/${role.toLowerCase()}${path.replace(/[^a-z0-9]+/gi, '-')}-${locale}${mobile ? '-mobile' : ''}.png`, fullPage: true });
 };
 if (targets[0] === '__nav__') {

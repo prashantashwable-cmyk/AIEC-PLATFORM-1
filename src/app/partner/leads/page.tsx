@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import { Badge, EmptyState, PageHeader, Section, StatusBadge, Table, Td, Th } from '@/components/ui';
-import { formatDateTime } from '@/lib/format';
+import { formatDateTime, nowMs } from '@/lib/format';
 import { load, pageCtx } from '@/server/page';
 import { listInvitations } from '@/server/services/matching';
 
 export default async function PartnerLeadsPage() {
   const { ctx, t, locale } = await pageCtx('partner');
   const rows = await load(() => listInvitations(ctx));
-  const now = Date.now();
+  const now = nowMs();
   return (
     <>
       <PageHeader title={t('nav.partnerLeads')} subtitle={t('p.partnerLeads.subtitle')} />

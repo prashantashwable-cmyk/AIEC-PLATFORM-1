@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 import { FilterBar, FilterSelect, FilterText, Pager, enumOptions } from '@/components/common';
 import { Badge, EmptyState, LinkButton, PageHeader, Section, StatusBadge, Table, Td, Th } from '@/components/ui';
 import { LEAD_STATUS } from '@/lib/enums';
-import { formatDateTime } from '@/lib/format';
+import { formatDateTime, nowMs } from '@/lib/format';
 import { displayPhone } from '@/lib/phone';
 import { load, pageCtx, readParams, withParams, type SearchParams } from '@/server/page';
 import { listLeads, listZones } from '@/server/services/leads';
@@ -14,7 +14,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Search
   const [data, zones] = await Promise.all([
     load(() => listLeads(ctx, { status: sp.status, zoneId: sp.zone, q: sp.q, page: Number(sp.page) || 1 })), listZones(),
   ]);
-  const now = Date.now();
+  const now = nowMs();
   return (
     <>
       <PageHeader title={t('nav.leads')} subtitle={t('p.leads.subtitle')}

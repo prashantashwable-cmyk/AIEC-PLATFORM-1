@@ -54,7 +54,7 @@ async function orderGates(tx: Tx, order: Rec): Promise<{ gates: OrderGate[]; act
   const milestoneSum = (await tx.one<{ s: string | null }>('select sum(percent)::text as s from quotation_milestones where version_id = $1', [order.quotation_version_id])).s;
   const gates: OrderGate[] = [
     { key: 'customerSelection', ok: true },
-    { key: 'partnerAcceptance', ok: order.status === 'PARTNER_ACCEPTED' },
+    { key: 'partnerAcceptance', ok: ['PARTNER_ACCEPTED', 'CONFIRMED', 'COMPLETED'].includes(order.status) || (order.status === 'ON_HOLD' && Boolean(order.partner_responded_at)) },
     { key: 'frozenScope', ok: Boolean(order.quotation_version_id) },
     { key: 'contract', ok: Boolean(order.contract_reference && order.contract_accepted_on) },
     { key: 'paymentSchedule', ok: milestoneSum !== null && Number(milestoneSum) === 100 },
@@ -181,6 +181,8 @@ export async function confirmOrder(ctx: Ctx, orderId: string): Promise<string> {
   return withCtx(ctx, async (tx) => {
     await tx.query(`select pg_advisory_xact_lock(hashtext('aiec:project-capacity'))`);
     const order = await tx.one<Rec>('select * from orders where id = $1 for update', [orderId]);
+    if (['CONFIRMED', 'COMPLETED', 'CANCELLED', 'PARTNER_DECLINED'].includes(order.status)) throw new AppError('INVALID_TRANSITION');
+    if (order.status !== 'PARTNER_ACCEPTED') throw new AppError('ORDER_NOT_ACCEPTED');
     const { gates, active, max } = await orderGates(tx, order);
     const failed = gates.find((g) => !g.ok);
     if (failed) throw new AppError(GATE_ERRORS[failed.key] ?? 'INVALID_TRANSITION', { active, max });

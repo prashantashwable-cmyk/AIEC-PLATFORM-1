@@ -7,6 +7,11 @@ const INTL: Record<Locale, string> = { en: 'en-IN', hi: 'hi-IN-u-nu-latn', mr: '
 const NUMBERS = 'en-IN';
 const TZ = 'Asia/Kolkata';
 
+/** Current time in milliseconds. Kept outside components so that rendering code stays free of direct clock reads. */
+export function nowMs(): number {
+  return Date.now();
+}
+
 export function formatINR(value: string | number | null | undefined, _locale: Locale = 'en'): string {
   if (value === null || value === undefined || value === '') return '—';
   const n = typeof value === 'number' ? value : Number(value);
