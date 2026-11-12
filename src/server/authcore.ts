@@ -48,7 +48,7 @@ export async function requestOtp(rawPhone: string): Promise<{ phone: string; san
 }
 
 /** Finds or creates the user for a verified phone number and links an existing customer record. */
-export async function ensureUserForPhone(tx: Tx, phone: string, name: string | null): Promise<string> {
+export async function ensureUserForPhone(tx: Tx, phone: string, name: string | null, opts: { asCustomer?: boolean } = {}): Promise<string> {
   let user = await tx.maybeOne<{ id: string; is_active: boolean }>('select id, is_active from users where phone = $1', [phone]);
   const customer = await tx.maybeOne<{ id: string; name: string; user_id: string | null }>('select id, name, user_id from customers where phone = $1', [phone]);
   if (user && !user.is_active) throw new AppError('ACCOUNT_DISABLED');
@@ -59,6 +59,8 @@ export async function ensureUserForPhone(tx: Tx, phone: string, name: string | n
     user = await tx.one<{ id: string; is_active: boolean }>('insert into users (phone, full_name) values ($1, $2) returning id, is_active', [phone, fullName]);
     created = true;
   }
+  // Users created for a company or staff role are not given a customer account implicitly.
+  if (opts.asCustomer === false) return user.id;
   const hasRole = await tx.maybeOne('select 1 from user_roles where user_id = $1 and revoked_at is null limit 1', [user.id]);
   if (created || (!hasRole && !customer?.user_id) || (customer && !customer.user_id)) {
     if (customer) {

@@ -58,7 +58,7 @@ export async function registerCompany(ctx: Ctx, input: CompanyInput, adminPhone?
                               warranty_policy, safety_procedures, references_note, created_by)
        values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) returning id`, [...companyParams(input), ctx.userId],
     );
-    const adminUserId = byStaff ? await ensureUserForPhone(tx, adminPhone!.phone, adminPhone!.name) : ctx.userId;
+    const adminUserId = byStaff ? await ensureUserForPhone(tx, adminPhone!.phone, adminPhone!.name, { asCustomer: false }) : ctx.userId;
     await tx.exec('insert into user_roles (user_id, role_code, company_id, granted_by) values ($1, $2, $3, $4)',
       [adminUserId, adminRoleFor(input.category), company.id, ctx.userId]);
     await audit(tx, ctx, 'partner.register', 'company', company.id, { legalName: input.legalName, category: input.category }, company.id);

@@ -55,7 +55,7 @@ export function ActionForm({
 
   return (
     <FormContext.Provider value={{ pending, fieldErrors: state && !state.ok ? (state.fieldErrors ?? {}) : {} }}>
-      <form ref={ref} onSubmit={onSubmit} className={className} noValidate>
+      <form ref={ref} action={formAction} onSubmit={onSubmit} className={className} noValidate>
         {state && !state.ok && <Alert tone="red" className="mb-3">{t(`err.${state.error}`, state.params)}</Alert>}
         {state?.ok && !hideSuccess && !state.redirect && (
           <Alert tone="green" className="mb-3">{t(state.message ?? 'common.saved', state.params)}</Alert>

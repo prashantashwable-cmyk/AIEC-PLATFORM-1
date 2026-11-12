@@ -16,8 +16,12 @@ page.on('pageerror', (e) => errors.push(`pageerror ${e}`));
 page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push(m.text()); });
 if (role !== 'ANON') {
   await page.goto(`${base}/login`, { waitUntil: 'load' });
-  await page.click(`[data-testid=demo-${role}]`);
-  await page.waitForURL((u) => !u.pathname.startsWith('/login'), { timeout: 30000 });
+  await page.locator(`[data-testid=demo-${role}]`).first().click();
+  await page.waitForURL((u) => /^\/(admin|partner|customer|tech)/.test(u.pathname) || u.pathname === '/app', { timeout: 30000 });
+  // Users with one workspace are redirected straight to it; others see the chooser first.
+  await page.waitForSelector('aside [data-nav], [data-testid^=portal-]', { state: 'attached', timeout: 30000 });
+  if (await page.locator('[data-testid^=portal-]').count()) await page.locator('[data-testid^=portal-]').first().click();
+  await page.waitForSelector('aside [data-nav]', { state: 'attached', timeout: 30000 });
 }
 let failed = 0;
 const targets = paths.length ? paths : ['__nav__'];
