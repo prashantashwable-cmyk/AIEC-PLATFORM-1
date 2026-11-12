@@ -323,6 +323,11 @@ export const core = {
     INCIDENT_IMMUTABLE: 'Incident records cannot be deleted or rewritten. Add a correction instead.',
     SELF_ROLE_CHANGE: 'You cannot change your own roles.',
     LAST_ADMIN: 'At least one active Super Admin is required.',
+    ONBOARDING_INCOMPLETE: 'Complete the missing onboarding items before submitting: {missing}.',
+    WEIGHTS_TOTAL: 'The weights must add up to exactly 100.',
+    NOTHING_TO_RELEASE: 'There is no submitted quotation to release.',
+    QC_NOT_PASSED: 'The latest internal quality inspection must be a pass before handover.',
+    SELF_REVIEW: 'A safety-critical task must be reviewed by someone other than the person who did it.',
     OFFLINE: 'You are offline. The entry is saved on this device and will sync automatically.',
   },
 };

@@ -14,14 +14,18 @@ export function notificationText(t: TFunction, locale: Locale, type: string, par
   const p: Record<string, string> = {};
   for (const [key, value] of Object.entries(params ?? {})) {
     const v = value === null || value === undefined ? '' : String(value);
-    p[key] = key === 'amount' ? formatINR(v, locale) : key === 'status' || key === 'result' ? translateCode(t, v) : key === 'type' ? t(`e.complianceDocType.${v}`) : v;
+    p[key] = key === 'amount' ? formatINR(v, locale) : ['status', 'result', 'severity'].includes(key) ? translateCode(t, v) : key === 'type' ? t(`e.complianceDocType.${v}`) : key === 'kind' ? t(`m.dataRequest.${v}`) : v;
   }
   return t(`n.${type}`, p);
 }
+const CODE_GROUPS = ['projectStatus', 'orderStatus', 'referralStatus', 'ticketStatus', 'milestoneStatus', 'partnerStatus', 'verificationStatus', 'qcResult', 'disputeStatus', 'incidentStatus', 'severity'];
+/** Status codes inside notifications are shown through the same enum labels as the rest of the app. */
 function translateCode(t: TFunction, code: string): string {
-  const key = `n.code.${code}`;
-  const text = t(key);
-  return text === key ? code : text;
+  for (const key of [`n.code.${code}`, ...CODE_GROUPS.map((g) => `e.${g}.${code}`)]) {
+    const text = t(key);
+    if (text !== key) return text;
+  }
+  return code;
 }
 
 export async function NotificationsView({ ctx, t, locale, page, basePath }: { ctx: Ctx; t: TFunction; locale: Locale; page: number; basePath: string }) {
