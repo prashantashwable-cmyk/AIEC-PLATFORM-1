@@ -198,7 +198,7 @@ describe('roles and tenant isolation (spec 4, 12)', () => {
     const leads = await withCtx(other.customer, (tx) => tx.query('select id from leads'));
     expect(leads).toHaveLength(1);
   });
-  it('shows a partner only the leads it was invited to, and never the customer’s phone before selection', async () => {
+  it('shows a partner only the leads it was invited to, and no customer records otherwise', async () => {
     const fresh = await customerLead('Uninvited Plaza');
     const visible = await withCtx(B.ctx, (tx) => tx.query('select id from leads where id = $1', [fresh.lead.id]));
     expect(visible).toHaveLength(0);

@@ -45,15 +45,16 @@ LOCALES=en,hi,mr node scripts/shot.mjs <outDir> name=/path [name=/path@mobile]
 Demo sign-in buttons on `/login` exist only when `AUTH_SANDBOX=true`.
 
 ## Status (update this section as work proceeds)
-Done: schema + RLS, all services, demo seed (full lifecycle verified), public site, theme system and 10 design options,
-all admin / partner / customer screens, technician offline app, REST API, full en/hi/mr dictionaries.
+Done: schema + RLS, all services, demo seed, public site, theme system and 10 design options, all admin / partner / customer
+screens, technician offline app, REST API, full en/hi/mr dictionaries, browser smoke for four roles in three languages,
+offline e2e (`npm run e2e`), vitest suite (`tests/unit.test.ts`, `tests/integration.test.ts` - 49 tests, needs Postgres),
+lint clean, README, `docs/` and CI workflow.
 
-Remaining, in order:
-1. Browser-verify every screen for every demo role in en/hi/mr (desktop + mobile) with `scripts/smoke.mjs`; fix whatever it reports. Test the technician offline flow (queue while offline, sync once, no duplicates).
-2. Automated tests in `tests/` (vitest): unit tests for `src/lib`, integration tests against `TEST_DATABASE_URL` covering spec section 18 (lifecycle, role boundaries, cross-tenant, duplicates, eligibility gates, quotation versioning, selection, state machines, commission, duplicate webhook, refund, finance consent, licence expiry, incident escalation, offline sync, five-project capacity), plus i18n parity.
-3. `npm run lint` clean, production build clean.
-4. README, `docs/` (audit, architecture, data model, API, security, compliance register, test plan), CI workflow (`.github/workflows/ci.yml`) with a Postgres service.
-5. Update PR #1 description: complete / sandbox-only / not built (real SMS, WhatsApp, lender, payment, e-sign, maps, PostGIS, native mobile apps).
+Before every push run: `npx tsc --noEmit && npm run lint && npx tsx scripts/i18n-scan.ts && npm test && npx next build`.
+`npm test` wipes `TEST_DATABASE_URL`. `npm run e2e` needs freshly seeded demo data and a running server.
+
+Open items (need the owner, not code): see README "Before going live" and `docs/compliance-register.md`.
+Not built: real SMS / WhatsApp / lender / payment / e-sign / maps integrations, PostGIS, native mobile apps, object storage.
 
 ## Git
 Branch `ccr-0e00fcb6-z6bogs`, draft PR #1. Commit and push after each verified stage. Do not put model names in commits or PR text.
