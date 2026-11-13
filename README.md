@@ -23,6 +23,7 @@ collections by default). Order confirmation in the app never means a statutory p
 | Area | Built |
 | --- | --- |
 | Public site | Landing page, enquiry form, privacy notice, OTP sign-in, ten selectable themes |
+| Partner self-service | Dashboard, capacity calendar (own limit, pilot limit, project dates), performance record, lead inbox, quotation builder, orders, projects, team, collections, commission, catalogue |
 | Lead CRM | Enquiry capture with consent, duplicate candidates for review, qualification, SLA due times, assignment by zone |
 | Survey | Scheduling, surveyor form with photos and coordinates, review |
 | Matching | Hard eligibility gates with reasons, weighted advisory score, versioned rules, invitations with response deadlines |

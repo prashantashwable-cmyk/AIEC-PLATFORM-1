@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Bell, Boxes, Building2, ChartColumn, CirclePlus, ClipboardList, FileSpreadsheet, Gavel, HardHat, IndianRupee, Landmark,
+  Bell, Boxes, Building2, CalendarRange, ChartColumn, CirclePlus, ClipboardList, FileSpreadsheet, Gauge, Gavel, HardHat, IndianRupee, Landmark,
   LayoutDashboard, PackageCheck, RefreshCw, Ruler, Scale, ScrollText, SearchCheck, Settings, ShieldCheck, TriangleAlert,
   UserCog, Users, Wrench, type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/format';
 
 const ICONS: Record<string, LucideIcon> = {
-  Bell, Boxes, Building2, ChartColumn, CirclePlus, ClipboardList, FileSpreadsheet, Gavel, HardHat, IndianRupee, Landmark,
+  Bell, Boxes, Building2, CalendarRange, ChartColumn, CirclePlus, ClipboardList, FileSpreadsheet, Gauge, Gavel, HardHat, IndianRupee, Landmark,
   LayoutDashboard, PackageCheck, RefreshCw, Ruler, Scale, ScrollText, SearchCheck, Settings, ShieldCheck, TriangleAlert,
   UserCog, Users, Wrench,
 };

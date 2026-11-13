@@ -33,6 +33,8 @@ const PARTNER: NavItem[] = [
   { key: 'quotations', href: '/partner/quotations', icon: 'FileSpreadsheet', anyOf: ['quotation.submit'] },
   { key: 'orders', href: '/partner/orders', icon: 'PackageCheck', anyOf: ['order.accept'] },
   { key: 'projects', href: '/partner/projects', icon: 'HardHat', anyOf: ['project.assign'] },
+  { key: 'capacity', href: '/partner/capacity', icon: 'CalendarRange', anyOf: ['project.assign'] },
+  { key: 'performance', href: '/partner/performance', icon: 'Gauge', anyOf: ['quotation.submit'] },
   { key: 'team', href: '/partner/team', icon: 'Users', anyOf: ['team.manage'] },
   { key: 'partnerCollections', href: '/partner/collections', icon: 'Scale', anyOf: ['payment.evidence.submit'] },
   { key: 'commissions', href: '/partner/commissions', icon: 'IndianRupee', anyOf: ['commission.view.own'] },

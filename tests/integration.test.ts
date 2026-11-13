@@ -19,6 +19,7 @@ import { addTeamMember, runExpirySweep } from '@/server/services/partners';
 import { addComplianceDocument, assignTeamMember, changeProjectStatus, createTask, updateReadiness } from '@/server/services/projects';
 import { reviewComplianceDocument } from '@/server/services/quality';
 import { customerAction, getComparison, getQuotation, releaseToCustomer, saveQuotation, startRevision } from '@/server/services/quotations';
+import { getPartnerCapacity, getPartnerPerformance } from '@/server/services/partnerhome';
 import { runReminderSweep } from '@/server/services/reminders';
 import { createTicket } from '@/server/services/service';
 import { syncEvents } from '@/server/services/tech';
@@ -559,5 +560,32 @@ describe('scheduled reminders (spec 13)', () => {
     for (const type of types) {
       for (const [name, dict] of [['en', en], ['hi', hi], ['mr', mr]] as const) expect(text(dict, type), `${name} n.${type}`).toBeTruthy();
     }
+  });
+});
+
+describe('partner capacity and performance views', () => {
+  it('shows a partner only its own load, limit and record', async () => {
+    const cap = await getPartnerCapacity(B.ctx);
+    expect(cap.limit).toBe(2);
+    expect(cap.pilot).toBe(5);
+    expect(cap.active).toBe((await sql<{ n: number }>('select app.active_project_count($1) as n', [B.companyId]))[0].n);
+    expect(cap.projects.every((p) => ['PLANNING', 'IN_PROGRESS', 'ON_HOLD', 'STOP_WORK', 'QC', 'HANDOVER_PENDING'].includes(p.status))).toBe(true);
+    const ownProjects = await sql<{ id: string }>(`select id from projects where company_id = $1`, [B.companyId]);
+    for (const p of cap.projects) expect(ownProjects.map((o) => o.id)).toContain(p.id);
+
+    const perf = await getPartnerPerformance(D.ctx);
+    expect(Number(perf.quotes.submitted)).toBeGreaterThan(0);
+    expect(Number(perf.invites.invited)).toBeGreaterThan(0);
+    for (const e of perf.events) expect(['INVITE_RESPONDED', 'INVITE_EXPIRED', 'PROJECT_ON_TIME', 'PROJECT_DELAYED', 'QC_PASS', 'QC_FAIL', 'COMPLAINT', 'CUSTOMER_RATING', 'SAFETY_INCIDENT']).toContain(e.event_type);
+    const ownEvents = Number((await sql<{ n: number }>('select count(*)::int as n from partner_performance_events where company_id = $1', [D.companyId]))[0].n);
+    expect(perf.events.length).toBe(Math.min(30, ownEvents));
+  });
+  it('is not available to technicians or customers', async () => {
+    const [techRow] = await sql<{ user_id: string }>(`select user_id from user_roles where role_code = 'TECHNICIAN' and revoked_at is null limit 1`);
+    const tech = await ctxByPhone((await sql<{ phone: string }>('select phone from users where id = $1', [techRow.user_id]))[0].phone);
+    expect(await code(getPartnerCapacity(tech))).toBe('FORBIDDEN');
+    expect(await code(getPartnerPerformance(tech))).toBe('FORBIDDEN');
+    const { customer } = await customerLead('Capacity Probe Residency');
+    expect(await code(getPartnerCapacity(customer))).toBe('FORBIDDEN');
   });
 });

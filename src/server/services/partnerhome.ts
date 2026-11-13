@@ -59,3 +59,43 @@ export async function setProductActive(ctx: Ctx, id: string, active: boolean): P
     if (!n) throw new AppError('NOT_FOUND');
   });
 }
+
+// ───────────── capacity and performance (partner self-service views) ─────────────
+/** The partner's project load against its own limit and the pilot limit, with the dates of each live project. */
+export async function getPartnerCapacity(ctx: Ctx) {
+  const companyId = requireCompany(ctx);
+  if (ctx.isTechnician) throw new AppError('FORBIDDEN');
+  return withCtx(ctx, async (tx) => {
+    const company = await tx.one<Rec>('select max_concurrent_projects, app.active_project_count(id) as active from companies where id = $1', [companyId]);
+    const projects = await tx.query<Rec>(
+      `select p.id, p.project_number, p.status, p.planned_start, p.planned_end, l.project_name,
+              ((p.planned_end is not null) and p.planned_end < (now() at time zone 'Asia/Kolkata')::date) as delayed
+         from projects p join leads l on l.id = p.lead_id
+        where p.company_id = $1 and p.status in ('PLANNING','IN_PROGRESS','ON_HOLD','STOP_WORK','QC','HANDOVER_PENDING')
+        order by coalesce(p.planned_start, p.created_at::date), p.project_number`, [companyId]);
+    const queued = await tx.query<Rec>(
+      `select o.id, o.order_number, o.status, l.project_name from orders o join leads l on l.id = o.lead_id
+        where o.company_id = $1 and o.status in ('PENDING_PARTNER_ACCEPTANCE','PARTNER_ACCEPTED') order by o.created_at`, [companyId]);
+    const pilot = Number((await tx.maybeOne<{ value: string }>(`select value from system_settings where key = 'pilot_max_active_projects'`))?.value ?? '5');
+    const pilotActive = (await tx.one<{ n: number }>('select app.active_project_count() as n')).n;
+    return { limit: Number(company.max_concurrent_projects), active: Number(company.active), pilot, pilotActive, projects, queued };
+  });
+}
+
+/** The partner's own verified performance record: the same events that feed the advisory matching score. */
+export async function getPartnerPerformance(ctx: Ctx) {
+  const companyId = requireCompany(ctx);
+  if (ctx.isTechnician) throw new AppError('FORBIDDEN');
+  return withCtx(ctx, async (tx) => {
+    const quotes = await tx.one<Rec>(
+      `select count(*) filter (where status not in ('DRAFT')) as submitted, count(*) filter (where status = 'SELECTED') as selected from quotations where company_id = $1`, [companyId]);
+    const invites = await tx.one<Rec>(
+      `select count(*) filter (where status in ('INVITED','ACCEPTED','DECLINED','EXPIRED')) as invited, count(*) filter (where status in ('ACCEPTED','DECLINED')) as answered,
+              count(*) filter (where status = 'EXPIRED') as expired from partner_matches where company_id = $1`, [companyId]);
+    const score = await tx.one<Rec>(
+      `select avg(score)::numeric(5,1)::text as avg_score, count(*) as events from partner_performance_events
+        where company_id = $1 and event_type not in ('INVITE_RESPONDED','INVITE_EXPIRED')`, [companyId]);
+    const events = await tx.query<Rec>('select id, event_type, score, note, created_at from partner_performance_events where company_id = $1 order by created_at desc limit 30', [companyId]);
+    return { quotes, invites, score, events };
+  });
+}

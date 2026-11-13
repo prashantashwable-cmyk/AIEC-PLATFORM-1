@@ -11,6 +11,7 @@ export const app = {
     registerPartner: 'Register an elevator company as an AIEC partner',
   },
   nav: {
+    capacity: 'Capacity calendar', performance: 'Performance',
     dashboard: 'Dashboard', leads: 'Lead CRM', customers: 'Customers', surveys: 'Site surveys', partners: 'Partner registry', quotations: 'Quotations',
     orders: 'Orders', projects: 'Projects', collections: 'Reconciliation', commissions: 'Commission', finance: 'Finance referrals', compliance: 'Compliance',
     qc: 'QC and defects', incidents: 'Safety incidents', service: 'Service and AMC', disputes: 'Disputes', reports: 'Reports', users: 'Users and roles',
@@ -328,6 +329,21 @@ export const app = {
     partnerLeads: {
       subtitle: 'Qualified, surveyed leads you are invited to quote for', empty: 'You have no invitations yet.', closed: 'This invitation is closed.',
       phoneAfterAccept: 'Shown after you accept', respond: 'Your response', respondNote: 'Please respond by {date}.',
+    },
+    capacity: {
+      subtitle: 'How many projects you are running, and when each one starts and ends',
+      yourProjects: 'Your projects in progress', pilotProjects: 'AIEC pilot projects', used: '{active} of {max}', free: '{count} slot(s) free',
+      pilotNote: 'The pilot allows a limited number of projects across all partners.', queued: 'Orders waiting', queuedNote: 'Awaiting your acceptance or AIEC confirmation',
+      full: 'Your project limit is reached. New orders cannot be confirmed until a project finishes or AIEC raises your limit.',
+      pilotFull: 'The AIEC pilot is at its project limit. New orders stay queued until a project finishes.',
+      schedule: 'Project schedule', scheduleNote: 'Projects that currently use a capacity slot.', none: 'No project is using a capacity slot.', delayed: 'Past planned end',
+    },
+    performance: {
+      subtitle: 'The verified record that AIEC uses as one input to partner matching',
+      note: 'The score is advisory. It never overrides licence, insurance, capability, area or capacity checks.',
+      avgScore: 'Average verified score', events: '{count} verified event(s)', invitations: 'Invitations received', answeredRate: 'Answered: {rate}',
+      expired: 'Invitations not answered in time', quotations: 'Quotations submitted', selectedRate: 'Selected: {selected} ({rate})',
+      recent: 'Recent verified events', none: 'No verified performance history yet.', event: 'Event', score: 'Score',
     },
     team: { subtitle: 'Supervisors and technicians of your company', addNote: 'Technicians see only the tasks assigned to them.' },
     catalogue: {
