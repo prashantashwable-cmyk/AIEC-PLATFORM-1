@@ -1,0 +1,127 @@
+export const enums = {
+  leadStatus: {
+    NEW: 'New', CONTACTED: 'Contacted', QUALIFIED: 'Qualified', SURVEY_PENDING: 'Survey pending',
+    SURVEY_COMPLETED: 'Survey completed', PARTNER_MATCHING: 'Partner matching', QUOTATION_PENDING: 'Quotation pending',
+    QUOTATION_RECEIVED: 'Quotation received', CUSTOMER_REVIEW: 'Customer review', NEGOTIATION: 'Negotiation',
+    SELECTED: 'Partner selected', ORDER_PENDING: 'Order pending', CONFIRMED: 'Order confirmed', LOST: 'Lost',
+    ON_HOLD: 'On hold', DUPLICATE: 'Duplicate', DISQUALIFIED: 'Disqualified', CANCELLED: 'Cancelled',
+  },
+  leadSource: {
+    WEBSITE: 'Website', CUSTOMER_APP: 'Customer app', WHATSAPP: 'WhatsApp', PHONE: 'Phone call',
+    BUILDER_REFERRAL: 'Builder referral', ARCHITECT_REFERRAL: 'Architect referral', SURVEYOR: 'Surveyor',
+    DIGITAL_ADS: 'Digital ads', CUSTOMER_REFERRAL: 'Existing-customer referral',
+  },
+  customerType: {
+    INDIVIDUAL_OWNER: 'Individual property owner', BUILDER: 'Builder / developer', HOUSING_SOCIETY: 'Housing society',
+    ARCHITECT: 'Architect / consultant', COMMERCIAL_OWNER: 'Commercial property owner',
+  },
+  buildingType: {
+    RESIDENTIAL_BUNGALOW: 'Bungalow / row house', RESIDENTIAL_APARTMENT: 'Residential apartment', COMMERCIAL: 'Commercial building',
+    HOSPITAL: 'Hospital', INDUSTRIAL: 'Industrial', MIXED_USE: 'Mixed use', OTHER: 'Other',
+  },
+  liftCategory: {
+    PASSENGER_RESIDENTIAL: 'Passenger lift (residential)', PASSENGER_COMMERCIAL: 'Passenger lift (commercial)', HOME_LIFT: 'Home lift',
+    GOODS: 'Goods lift', HOSPITAL_BED: 'Hospital / bed lift', FIRE_SERVICE: 'Fire-service lift', CUSTOM: 'Custom-engineered lift',
+  },
+  timeline: {
+    IMMEDIATE: 'Immediately', ONE_TO_THREE_MONTHS: 'In 1–3 months', THREE_TO_SIX_MONTHS: 'In 3–6 months',
+    SIX_PLUS_MONTHS: 'After 6 months', UNDECIDED: 'Not decided yet',
+  },
+  siteReadiness: {
+    NOT_STARTED: 'Construction not started', UNDER_CONSTRUCTION: 'Under construction', SHAFT_READY: 'Lift shaft ready',
+    EXISTING_BUILDING: 'Existing building', UNKNOWN: 'Not sure',
+  },
+  surveyStatus: {
+    SCHEDULED: 'Scheduled', IN_PROGRESS: 'In progress', SUBMITTED: 'Submitted', REVIEWED: 'Reviewed',
+    REWORK_REQUIRED: 'Rework required', CANCELLED: 'Cancelled',
+  },
+  companyCategory: {
+    ELEVATOR_COMPANY: 'Licensed elevator company', MANUFACTURER: 'Manufacturer / OEM', SUPPLIER: 'Component supplier',
+    INSTALLATION_SUBCONTRACTOR: 'Installation subcontractor', SERVICE_PROVIDER: 'Service / AMC provider', QC_PROVIDER: 'Independent QC provider',
+  },
+  entityType: {
+    PROPRIETORSHIP: 'Proprietorship', PARTNERSHIP: 'Partnership', LLP: 'LLP', PRIVATE_LIMITED: 'Private limited',
+    PUBLIC_LIMITED: 'Public limited', OTHER: 'Other',
+  },
+  partnerStatus: {
+    DRAFT: 'Draft', SUBMITTED: 'Submitted', UNDER_REVIEW: 'Under review', VERIFIED: 'Verified', ACTIVE: 'Active',
+    REJECTED: 'Rejected', SUSPENDED: 'Suspended', EXPIRED: 'Expired', UNDER_RENEWAL: 'Under renewal', TERMINATED: 'Terminated',
+  },
+  partnerGrade: { UNGRADED: 'Not graded', SILVER: 'Silver', GOLD: 'Gold', PLATINUM: 'Platinum' },
+  licenseType: { LIFT_CONTRACTOR: 'Lift contractor licence', ELECTRICAL_CONTRACTOR: 'Electrical contractor licence', OTHER: 'Other authorisation' },
+  insuranceType: {
+    PUBLIC_LIABILITY: 'Public liability', WORKMEN_COMPENSATION: "Workmen's compensation", CONTRACTOR_ALL_RISK: 'Contractor all-risk', OTHER: 'Other',
+  },
+  verificationStatus: { PENDING: 'Pending review', VERIFIED: 'Verified', REJECTED: 'Rejected' },
+  matchStatus: { SUGGESTED: 'Suggested', INVITED: 'Invited', ACCEPTED: 'Accepted', DECLINED: 'Declined', EXPIRED: 'Expired' },
+  quotationStatus: {
+    DRAFT: 'Draft', SUBMITTED: 'Submitted', REVISION_REQUESTED: 'Revision requested', CLARIFICATION_REQUESTED: 'Clarification requested',
+    SELECTED: 'Selected', NOT_SELECTED: 'Not selected', WITHDRAWN: 'Withdrawn', EXPIRED: 'Expired',
+  },
+  selectionAction: {
+    SELECT: 'Partner selected', NEGOTIATE: 'Negotiation requested', CLARIFY: 'Clarification requested',
+    REQUEST_ANOTHER: 'Another quotation requested', REJECT_ALL: 'All quotations rejected', HOLD: 'Put on hold',
+  },
+  orderStatus: {
+    PENDING_PARTNER_ACCEPTANCE: 'Awaiting partner acceptance', PARTNER_ACCEPTED: 'Partner accepted', PARTNER_DECLINED: 'Partner declined',
+    CONFIRMED: 'Confirmed', ON_HOLD: 'On hold', COMPLETED: 'Completed', CANCELLED: 'Cancelled',
+  },
+  projectStatus: {
+    PLANNING: 'Planning', IN_PROGRESS: 'In progress', ON_HOLD: 'On hold', STOP_WORK: 'Stop work', QC: 'Quality check',
+    HANDOVER_PENDING: 'Handover pending', HANDED_OVER: 'Handed over', CLOSED: 'Closed', CANCELLED: 'Cancelled',
+  },
+  milestoneStatus: { PENDING: 'Pending', IN_PROGRESS: 'In progress', COMPLETED: 'Completed' },
+  taskStatus: { TODO: 'To do', IN_PROGRESS: 'In progress', DONE_PENDING_REVIEW: 'Done – awaiting review', APPROVED: 'Approved', REWORK: 'Rework needed' },
+  materialStatus: { PLANNED: 'Planned', ORDERED: 'Ordered', DISPATCHED: 'Dispatched', DELIVERED: 'Delivered' },
+  collectionStatus: {
+    PENDING_EVIDENCE: 'Evidence pending', SUBMITTED: 'Submitted', UNDER_REVIEW: 'Under review', VERIFIED: 'Verified',
+    REJECTED: 'Rejected', DISPUTED: 'Disputed', REFUNDED: 'Refunded',
+  },
+  paymentMode: {
+    BANK_TRANSFER: 'Bank transfer (NEFT/RTGS/IMPS)', UPI: 'UPI', CHEQUE: 'Cheque', DEMAND_DRAFT: 'Demand draft', CASH: 'Cash',
+    LOAN_DISBURSEMENT: 'Lender disbursement', OTHER: 'Other',
+  },
+  evidenceKind: { BANK_PROOF: 'Bank proof', PARTNER_RECEIPT: 'Partner receipt', SCREENSHOT: 'Screenshot', OTHER: 'Other' },
+  ledgerStatus: { VERIFIED: 'Verified', INVOICED: 'Invoiced', DUE: 'Due', PAID: 'Paid', DISPUTED: 'Disputed' },
+  ledgerType: { COMMISSION: 'Commission', ADJUSTMENT: 'Adjustment', REFUND_REVERSAL: 'Refund reversal' },
+  invoiceStatus: { ISSUED: 'Issued', DUE: 'Overdue', PAID: 'Paid', CANCELLED: 'Cancelled' },
+  referralStatus: {
+    CONSENT_PENDING: 'Consent pending', CONSENTED: 'Consent given', READY_TO_REFER: 'Ready to refer', REFERRED: 'Referred to lender',
+    LENDER_CONTACTED: 'Lender contacted customer', APPLICATION_IN_PROGRESS: 'Application in progress', APPROVED: 'Approved by lender',
+    REJECTED: 'Rejected by lender', WITHDRAWN: 'Consent withdrawn', EXPIRED: 'Expired',
+  },
+  statusSource: { LENDER: 'Supplied by lender', CUSTOMER: 'Confirmed by customer' },
+  lenderType: { BANK: 'Bank', NBFC: 'RBI-regulated NBFC', HFC: 'Housing finance company', OTHER: 'Other regulated entity' },
+  agreementStatus: { NONE: 'No agreement', IN_NEGOTIATION: 'In negotiation', SIGNED: 'Signed', EXPIRED: 'Expired' },
+  integrationStatus: { SANDBOX: 'Sandbox (not real)', MANUAL: 'Manual handoff', LIVE: 'Live integration' },
+  contactPreference: { PHONE: 'Phone call', WHATSAPP: 'WhatsApp', EMAIL: 'Email' },
+  complianceDocType: {
+    ERECTION_PERMISSION: 'Erection permission', APPROVED_DRAWINGS: 'Approved drawings', INSPECTION_REPORT: 'Inspection report',
+    WORKING_LICENCE: 'Working licence', MAINTENANCE_RECORD: 'Maintenance record', SAFETY_AUDIT: 'Safety audit record',
+    INCIDENT_REPORT: 'Incident report', PRODUCT_CERTIFICATE: 'Product certificate', WARRANTY_RECORD: 'Warranty record',
+    STATE_SPECIFIC: 'State-specific document',
+  },
+  complianceGate: { PROJECT_START: 'Before work starts', HANDOVER: 'Before handover' },
+  sourceVerification: { UNVERIFIED: 'Not yet verified', VERIFIED: 'Verified' },
+  qcResult: { PASS: 'Pass', FAIL: 'Fail', CONDITIONAL: 'Conditional' },
+  severity: { LOW: 'Low', MEDIUM: 'Medium', HIGH: 'High', CRITICAL: 'Critical' },
+  defectStatus: { OPEN: 'Open', CORRECTIVE_ACTION: 'Corrective action', RESOLVED: 'Resolved', CLOSED: 'Closed' },
+  correctiveStatus: { OPEN: 'Open', DONE: 'Done', VERIFIED: 'Verified' },
+  incidentStatus: {
+    REPORTED: 'Reported', TRIAGED: 'Triaged', EMERGENCY_ESCALATION: 'Emergency escalation', INVESTIGATION: 'Investigation',
+    CORRECTIVE_ACTION: 'Corrective action', REVIEWED: 'Reviewed', CLOSED: 'Closed',
+  },
+  ticketKind: { BREAKDOWN: 'Breakdown', MAINTENANCE: 'Maintenance visit', WARRANTY_CLAIM: 'Warranty claim', COMPLAINT: 'Complaint' },
+  ticketPriority: { NORMAL: 'Normal', EMERGENCY: 'Emergency' },
+  ticketStatus: { OPEN: 'Open', ACKNOWLEDGED: 'Acknowledged', ASSIGNED: 'Assigned', IN_PROGRESS: 'In progress', RESOLVED: 'Resolved', CLOSED: 'Closed' },
+  amcStatus: { ACTIVE: 'Active', EXPIRED: 'Expired', CANCELLED: 'Cancelled' },
+  disputeKind: { PAYMENT: 'Payment', COMMISSION: 'Commission', QUALITY: 'Quality', SERVICE: 'Service', OTHER: 'Other' },
+  disputeStatus: { OPEN: 'Open', UNDER_REVIEW: 'Under review', RESOLVED: 'Resolved', REJECTED: 'Rejected' },
+  role: {
+    SUPER_ADMIN: 'Super Admin / Owner', OPS_MANAGER: 'Operations Manager', CITY_MANAGER: 'City Manager', SALES_EXEC: 'Sales / Lead Executive',
+    SURVEYOR: 'Surveyor', FINANCE_COORD: 'Finance Referral Coordinator', QC_COORD: 'QC / Inspection Coordinator',
+    PARTNER_ADMIN: 'Partner company admin', PARTNER_SUPERVISOR: 'Partner supervisor', TECHNICIAN: 'Technician',
+    SUPPLIER: 'Manufacturer / Supplier', SERVICE_PARTNER: 'Service partner', CUSTOMER: 'Customer',
+  },
+  syncStatus: { PENDING: 'Pending', SYNCED: 'Synced', FAILED: 'Failed' },
+};

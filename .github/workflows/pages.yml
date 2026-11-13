@@ -1,0 +1,73 @@
+name: Pages preview
+
+# GitHub Pages serves static files only. The application needs a Node.js server and PostgreSQL, so this
+# publishes a static preview of the public pages (English, Hindi, Marathi), not the application.
+# One-time setup by a repository admin: Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      AUTH_SANDBOX: 'true'
+      APP_SECRET: pages-preview-only-0123456789abcdef
+      RECONCILIATION_WEBHOOK_SECRET: pages-preview-only-webhook
+      DATABASE_URL: postgres://unused:unused@localhost:5432/unused
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - name: Render the public pages from the production build
+        run: |
+          REPO="${GITHUB_REPOSITORY#*/}"
+          case "$REPO" in *.github.io) BASE="" ;; *) BASE="/$REPO" ;; esac
+          echo "BASE=$BASE" >> "$GITHUB_ENV"
+          npx next start -p 3000 > next.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf -o /dev/null http://localhost:3000/ && break; sleep 1; done
+          PAGES_BASE="$BASE" REPO_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" node scripts/pages-preview.mjs dist-pages
+      - name: Check the static copy
+        run: |
+          mkdir -p "_site$BASE"
+          cp -r dist-pages/. "_site$BASE/"
+          python3 -m http.server 8099 --directory _site > /dev/null 2>&1 &
+          sleep 2
+          node scripts/pages-check.mjs "http://localhost:8099$BASE"
+      # Only needed to deploy. On pull requests the build and the check above are the whole job, so the
+      # run stays green before an admin has switched Pages on.
+      - if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-pages
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
