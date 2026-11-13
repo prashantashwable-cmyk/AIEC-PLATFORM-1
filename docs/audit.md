@@ -30,7 +30,7 @@ webhook contract; all demo data (`is_demo`).
 ## Not built
 
 Native mobile apps, real provider integrations, maps, PostGIS, object storage, virus scanning,
-scheduled jobs runner, error monitoring, staff multi-factor sign-in, automatic data retention,
+a built-in job scheduler, error monitoring, staff multi-factor sign-in, automatic data retention,
 PDF generation for quotations and invoices (they are screens and records, not PDF files), bulk
 import and export.
 

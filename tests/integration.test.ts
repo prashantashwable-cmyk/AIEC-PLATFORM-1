@@ -12,14 +12,19 @@ import { getCustomerLead } from '@/server/services/customer';
 import { giveFinanceConsent, saveLender, updateReferral, withdrawFinanceConsent } from '@/server/services/finance';
 import { createLead, getLead, markContacted, setLeadException } from '@/server/services/leads';
 import { scheduleSurvey } from '@/server/services/surveys';
-import { invitePartners, listInvitations, runMatching } from '@/server/services/matching';
+import { invitePartners, listInvitations, respondInvitation, runMatching } from '@/server/services/matching';
 import { adjustCommission, createInvoice, handleReconciliationWebhook, listCollections, reconcileCollection, recordRefund, submitCollection } from '@/server/services/money';
 import { confirmOrder, getOrder, respondOrder, updateOrderTerms } from '@/server/services/orders';
 import { addTeamMember, runExpirySweep } from '@/server/services/partners';
 import { addComplianceDocument, assignTeamMember, changeProjectStatus, createTask, updateReadiness } from '@/server/services/projects';
 import { reviewComplianceDocument } from '@/server/services/quality';
 import { customerAction, getComparison, getQuotation, releaseToCustomer, saveQuotation, startRevision } from '@/server/services/quotations';
+import { runReminderSweep } from '@/server/services/reminders';
+import { createTicket } from '@/server/services/service';
 import { syncEvents } from '@/server/services/tech';
+import { en } from '@/i18n/messages/en';
+import { hi } from '@/i18n/messages/hi';
+import { mr } from '@/i18n/messages/mr';
 
 loadEnv();
 const TEST_DB = process.env.TEST_DATABASE_URL ?? 'postgres://aiec:aiec@localhost:5432/aiec_test';
@@ -460,5 +465,99 @@ describe('pilot capacity (spec 5.9)', () => {
     const results = await Promise.all([code(confirmOrder(s.ops, sixth)), code(confirmOrder(s.admin, seventh))]);
     expect(results.sort()).toEqual(['CAPACITY_FULL', 'NO_ERROR']);
     expect(await active()).toBe(5);
+  });
+});
+
+// These tests reuse the projects, incident and invoice created by the earlier suites, so run the whole file (no -t filter).
+describe('scheduled reminders (spec 13)', () => {
+  const countOf = (type: string, userId?: string) => sql<{ n: number }>(
+    `select count(*)::int as n from notifications where type = $1 ${userId ? 'and user_id = $2' : ''}`, userId ? [type, userId] : [type]).then((r) => r[0].n);
+
+  it('sets a quotation due time when a partner accepts an invitation', async () => {
+    const { lead } = await customerLead('Reminder Quotation Court');
+    await surveyLead(s, lead.id);
+    await runMatching(s.ops, lead.id);
+    await invitePartners(s.ops, lead.id, [D.companyId]);
+    const invitation = (await listInvitations(D.ctx)).find((i) => i.status === 'INVITED')!;
+    const quotationId = (await respondInvitation(D.ctx, { id: invitation.id, decision: 'accept' }))!;
+    const [q] = await sql<{ due_at: Date | null }>('select due_at from quotations where id = $1', [quotationId]);
+    expect(q.due_at).not.toBeNull();
+    expect(q.due_at!.getTime()).toBeGreaterThan(Date.now());
+    await sql('update quotations set due_at = now() - interval \'1 hour\' where id = $1', [quotationId]);
+  });
+
+  it('raises every overdue and upcoming alert once, to the right audience, and never repeats it', async () => {
+    // Overdue lead (and one that is not overdue).
+    const late = await customerLead('Reminder Late Lead');
+    const fresh = await customerLead('Reminder Fresh Lead');
+    await sql(`update leads set response_due_at = now() - interval '2 hours' where id = $1`, [late.lead.id]);
+    await sql(`update leads set response_due_at = now() + interval '2 hours' where id = $1`, [fresh.lead.id]);
+
+    // Records on an existing running project.
+    const [project] = await sql<{ id: string; company_id: string; customer_id: string; lead_id: string }>(
+      `select id, company_id, customer_id, lead_id from projects where status = 'PLANNING' and company_id = $1 limit 1`, [D.companyId]);
+    await sql(`update project_milestones set due_date = current_date - 3, status = 'PENDING' where id = (select id from project_milestones where project_id = $1 order by seq limit 1)`, [project.id]);
+    await sql(`insert into warranties (project_id, company_id, customer_id, starts_on, ends_on) values ($1, $2, $3, current_date - 335, current_date + 10) on conflict do nothing`,
+      [project.id, project.company_id, project.customer_id]);
+    await sql(`insert into amc_contracts (project_id, company_id, customer_id, starts_on, ends_on, visits_per_year) values ($1, $2, $3, current_date - 200, current_date + 165, 4)`,
+      [project.id, project.company_id, project.customer_id]);
+    const customerUser = await withSystem(async (tx) => (await loadCtx(tx, (await tx.one<{ user_id: string }>('select user_id from customers where id = $1', [project.customer_id])).user_id))!);
+    const ticketId = await createTicket(customerUser, { projectId: project.id, kind: 'COMPLAINT', priority: 'NORMAL', description: 'Lift door closes slowly' });
+    await sql(`update service_tickets set ack_due_at = now() - interval '1 hour' where id = $1`, [ticketId]);
+    const [incident] = await sql<{ id: string }>('select id from safety_incidents limit 1');
+    await sql(`insert into corrective_actions (incident_id, company_id, description, due_date) values ($1, $2, 'Re-fit the shaft barricade', current_date - 2)`, [incident.id, D.companyId]);
+    const [invoice] = await sql<{ id: string }>(`select id from commission_invoices where status = 'ISSUED' limit 1`);
+    await sql(`update commission_invoices set due_date = current_date - 1 where id = $1`, [invoice.id]);
+    await sql(`update company_licenses set expiry_date = current_date + 20 where company_id = $1`, [D.companyId]);
+    await sql(`update company_insurance_policies set expiry_date = current_date + 5 where company_id = $1`, [D.companyId]);
+
+    const first = await runReminderSweep();
+    for (const kind of ['LEAD_RESPONSE_OVERDUE', 'QUOTATION_OVERDUE', 'MILESTONE_OVERDUE', 'LICENCE_EXPIRING', 'INSURANCE_EXPIRING', 'WARRANTY_EXPIRING',
+      'AMC_VISIT_DUE', 'INVOICE_OVERDUE', 'TICKET_ACK_OVERDUE', 'CORRECTIVE_ACTION_OVERDUE']) {
+      expect(first[kind], kind).toBeGreaterThanOrEqual(1);
+    }
+    // Only the late lead is reported.
+    const leadAlerts = await sql<{ number: string }>(`select params->>'number' as number from notifications where type = 'LEAD_RESPONSE_OVERDUE'`);
+    expect(leadAlerts.map((a) => a.number)).toContain(late.lead.leadNumber);
+    expect(leadAlerts.map((a) => a.number)).not.toContain(fresh.lead.leadNumber);
+    // Running again changes nothing.
+    expect(await runReminderSweep()).toEqual({});
+
+    // Audience: the owning partner and the right staff, nobody else.
+    const adminD = (await sql<{ user_id: string }>(`select user_id from user_roles where company_id = $1 and role_code = 'PARTNER_ADMIN'`, [D.companyId]))[0].user_id;
+    expect(await countOf('LICENCE_EXPIRING', adminD)).toBe(1);
+    expect(await countOf('LICENCE_EXPIRING', A.ctx.userId)).toBe(0);
+    expect(await countOf('MILESTONE_OVERDUE', A.ctx.userId)).toBe(0);
+    expect(await countOf('LICENCE_EXPIRING', s.admin.userId)).toBe(1);
+    expect(await countOf('LICENCE_EXPIRING', s.sales.userId)).toBe(0);
+    expect(await countOf('WARRANTY_EXPIRING', customerUser.userId)).toBe(1);
+    expect(await countOf('TICKET_ACK_OVERDUE', s.ops.userId)).toBe(1);
+    expect(await countOf('TICKET_ACK_OVERDUE', adminD)).toBe(0);
+
+    // Expiry alerts repeat only when the next threshold is reached (20 days: 30-day alert; 5 days: 7-day; 1 day: 1-day).
+    await sql(`update company_licenses set expiry_date = current_date + 6 where company_id = $1`, [D.companyId]);
+    expect((await runReminderSweep()).LICENCE_EXPIRING).toBe(1);
+    await sql(`update company_licenses set expiry_date = current_date + 5 where company_id = $1`, [D.companyId]);
+    expect(await runReminderSweep()).toEqual({});
+    await sql(`update company_licenses set expiry_date = current_date + 1 where company_id = $1`, [D.companyId]);
+    expect((await runReminderSweep()).LICENCE_EXPIRING).toBe(1);
+    expect(await runReminderSweep()).toEqual({});
+
+    // Completing the work stops the alerts: a done milestone and an acknowledged ticket are not reported again.
+    await sql(`update project_milestones set status = 'COMPLETED' where project_id = $1`, [project.id]);
+    expect(await runReminderSweep()).toEqual({});
+
+    // Restore the partner's dates so later checks see a healthy partner.
+    await sql(`update company_licenses set expiry_date = current_date + 400 where company_id = $1`, [D.companyId]);
+    await sql(`update company_insurance_policies set expiry_date = current_date + 265 where company_id = $1`, [D.companyId]);
+  });
+
+  it('has a translation in English, Hindi and Marathi for every alert type that was raised', async () => {
+    const types = (await sql<{ type: string }>('select distinct type from notifications')).map((r) => r.type);
+    expect(types.length).toBeGreaterThan(10);
+    const text = (dict: unknown, type: string) => (dict as { n: Record<string, string> }).n[type];
+    for (const type of types) {
+      for (const [name, dict] of [['en', en], ['hi', hi], ['mr', mr]] as const) expect(text(dict, type), `${name} n.${type}`).toBeTruthy();
+    }
   });
 });

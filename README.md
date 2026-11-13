@@ -51,7 +51,7 @@ collections by default). Order confirmation in the app never means a statutory p
 - Maps and PostGIS. Zones are a fixed list; coordinates are stored as plain numbers and distance uses the haversine formula.
 - Native Android / iOS apps. The customer, partner and technician apps are responsive web apps (the technician app is installable and works offline). This is a deviation from the specification's preferred React Native stack, chosen so that one codebase could be verified end to end.
 - Object storage. Documents are stored privately in PostgreSQL (8 MB limit per file). Move to S3-compatible storage before volume grows.
-- Scheduling. `/api/jobs/housekeeping` must be called by an external cron.
+- A scheduler. `/api/jobs/housekeeping` (licence expiry and all reminders) must be called by an external cron. Reminders appear in the in-app notification lists; nothing is sent by SMS or WhatsApp.
 - Error monitoring and rate limiting beyond the OTP attempt limits.
 
 ## Run it locally
@@ -120,7 +120,7 @@ URL). Set the variables from `.env.example`, run `npm run db:migrate`, then `npm
 5. Confirm the compliance register (`/admin/compliance`) against the current Maharashtra lift rules and department circulars. The seeded sources are a reading list, not a legal opinion.
 6. Sign a written agreement with any lender before adding it; decide with counsel whether AIEC's referral role makes it a lending service provider.
 7. Verify real partner licences and insurance with the issuing authority before activating a partner.
-8. Schedule `POST /api/jobs/housekeeping` (daily) and database backups.
+8. Schedule `POST /api/jobs/housekeeping` (at least daily, with `Authorization: Bearer <APP_SECRET>`). It expires lapsed licences and raises the overdue and expiring-soon reminders. Also schedule database backups.
 9. Move document storage to object storage and add virus scanning for uploads.
 10. Run a security review and a load test.
 

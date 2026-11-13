@@ -7,7 +7,7 @@
 | `npm run typecheck` | Types, including that Hindi and Marathi dictionaries have every English key |
 | `npm run lint` | ESLint (Next.js, React hooks, TypeScript rules) |
 | `npx tsx scripts/i18n-scan.ts` | Every translation key, error code and notification type used in the source exists |
-| `npm test` | 49 tests: 21 unit, 28 integration |
+| `npm test` | 55 tests: 24 unit, 31 integration |
 | `npm run build` | Production build |
 
 ### Unit tests (`tests/unit.test.ts`)
@@ -45,6 +45,7 @@ services and row-level security the application uses.
 | Incident escalation | High-severity hazard escalates, stops work, notifies QC; partner cannot lift the stop, AIEC can |
 | Finance consent | No referral without consent; unsigned lender refused; only approved fields in the handoff; lender statuses need a source; staff cannot withdraw on the customer's behalf; withdrawal recorded |
 | Licence expiry | Lapsed licence expires the partner, removes it from matching, alerts staff |
+| Scheduled reminders | Quotation due time set on acceptance; each alert raised once for due records and not for records that are not due; second run raises nothing; expiry alerts repeat only at the next threshold; only the owning partner and the right staff are notified; completed work stops alerts; every raised type has en / hi / mr text |
 | Five-project capacity | Partner limit enforced; sixth project refused and stays queued; two simultaneous confirmations for one free slot — exactly one succeeds |
 
 ## Browser checks (need a running server with demo data)

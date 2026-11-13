@@ -155,7 +155,8 @@ export async function respondInvitation(ctx: Ctx, input: z.infer<typeof respondI
     let quotationId: string | null = null;
     if (accept) {
       const survey = await tx.maybeOne<Rec>(`select floors, stops from site_surveys where lead_id = $1 and status = 'REVIEWED' order by reviewed_at desc limit 1`, [match.lead_id]);
-      quotationId = (await tx.one<{ id: string }>('insert into quotations (lead_id, company_id) values ($1, $2) returning id', [match.lead_id, companyId])).id;
+      const quotationDue = addWorkingDays(new Date(), Number(await getSetting(tx, 'sla_quotation_days')), await getHolidays(tx));
+      quotationId = (await tx.one<{ id: string }>('insert into quotations (lead_id, company_id, due_at) values ($1, $2, $3) returning id', [match.lead_id, companyId, quotationDue])).id;
       const version = await tx.one<{ id: string }>(
         'insert into quotation_versions (quotation_id, version_no, floors, stops, created_by) values ($1, 1, $2, $3, $4) returning id',
         [quotationId, survey?.floors ?? lead.floors ?? null, survey?.stops ?? null, ctx.userId]);

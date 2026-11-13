@@ -60,4 +60,20 @@ Request bodies are the zod schemas exported next to each service function in
 | GET | `/api/files/:id` | Streams a private document if the caller may see it; every access is logged |
 | POST | `/api/tech/sync` | `{ "events": [...] }`, at most 50 per call. Returns one acknowledgement per event: `SYNCED`, `DUPLICATE` or `FAILED` with an error code. Event types: `ATTENDANCE`, `TASK_STATUS`, `CHECKLIST`, `MATERIAL_USAGE`, `EVIDENCE`, `HAZARD`. Each carries `clientEventId` (UUID) and `capturedAt` (device time). |
 | POST | `/api/webhooks/reconciliation` | **Sandbox contract.** Body `{ eventId, companyId, bankReference, amount }`; header `x-aiec-signature` = hex HMAC-SHA256 of the raw body with `RECONCILIATION_WEBHOOK_SECRET`. Verifies the matching submitted collection once; a replayed `eventId` returns `duplicate` and changes nothing. |
-| POST | `/api/jobs/housekeeping` | `Authorization: Bearer <APP_SECRET>`. Expires partners whose mandatory licence has lapsed and invitations past their deadline. Run daily. |
+| POST | `/api/jobs/housekeeping` | `Authorization: Bearer <APP_SECRET>`. Expires partners whose mandatory licence has lapsed and invitations past their deadline, then raises the scheduled reminders (below). Returns `{ partnersExpired, invitationsExpired, reminders: { <TYPE>: count } }`. Safe to run as often as wanted; run it at least daily. |
+
+### Scheduled reminders
+
+Each alert is raised once per record (and once per threshold for expiries), tracked in `reminder_log`.
+
+| Alert | Raised when | Sent to |
+| --- | --- | --- |
+| `LEAD_RESPONSE_OVERDUE` | New lead not answered by its response target | Staff who see all leads |
+| `QUOTATION_OVERDUE` | Quotation still a draft after the due time set at acceptance (`sla_quotation_days`) | The partner and staff who invite partners |
+| `MILESTONE_OVERDUE` | Payment milestone past its due date and not completed | The partner and project managers |
+| `LICENCE_EXPIRING`, `INSURANCE_EXPIRING` | Verified document of an active partner is within the alert window (`expiry_alert_days`): once at the window, 7 days and 1 day | The partner and staff who activate partners |
+| `WARRANTY_EXPIRING` | Warranty ends within 30 days | The customer and the partner |
+| `AMC_VISIT_DUE` | Fewer maintenance visits recorded than the contract schedule calls for (one alert per missed visit) | The partner and service staff |
+| `INVOICE_OVERDUE` | Commission invoice issued and past its due date | The partner and staff who invoice |
+| `TICKET_ACK_OVERDUE` | Complaint still `OPEN` after its acknowledgement target | Service staff |
+| `CORRECTIVE_ACTION_OVERDUE` | Open corrective action past its due date | The company and QC staff |

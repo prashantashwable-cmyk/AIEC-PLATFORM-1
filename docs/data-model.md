@@ -1,6 +1,6 @@
 # Data model
 
-73 tables in `db/migrations/0001_schema.sql`. Keys are UUIDs, timestamps are `timestamptz` (UTC),
+74 tables (73 in `db/migrations/0001_schema.sql`, plus `reminder_log` in `0004_reminders.sql`). Keys are UUIDs, timestamps are `timestamptz` (UTC),
 calendar dates are `date`, money is `numeric(14,2)` in INR. Every status column has a CHECK
 constraint listing its allowed values. Human-readable numbers (`LD-2026-00001`, `OR-…`, `PR-…`)
 come from sequences.
@@ -21,7 +21,7 @@ come from sequences.
 | Finance referral | `lender_partners`, `finance_referrals`, `finance_referral_events`, `finance_handoffs` |
 | Compliance and quality | `regulatory_sources`, `compliance_requirements`, `compliance_documents`, `qc_inspections`, `qc_defects`, `corrective_actions`, `safety_incidents`, `incident_events` |
 | Service | `warranties`, `amc_contracts`, `service_tickets`, `maintenance_visits`, `disputes` |
-| Governance | `notifications`, `outbound_messages`, `audit_logs`, `system_settings` |
+| Governance | `notifications`, `outbound_messages`, `audit_logs`, `system_settings`, `reminder_log` |
 
 ## State machines
 
@@ -50,6 +50,7 @@ These hold even if application code has a bug.
 | One commission entry per verified collection | Partial unique index on `commission_ledger(collection_id)` |
 | A bank event or an offline event is processed once | Primary keys on `webhook_events` and `client_events` |
 | The original incident report is immutable | Trigger on `safety_incidents`; corrections are appended to `incident_events` |
+| A reminder is raised once per record and threshold | Primary key on `reminder_log(kind, entity_id, bucket)`; the table has row-level security and no tenant policy |
 | One live order per lead | Partial unique index `orders_live_lead_uq` (declined and cancelled orders excluded) |
 
 ## Reference data

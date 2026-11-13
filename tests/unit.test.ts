@@ -6,6 +6,7 @@ import { formatINR } from '@/lib/format';
 import { DEFAULT_WEIGHTS, eligibility, score, type PartnerFacts } from '@/lib/matching';
 import { displayPhone, normalizePhone } from '@/lib/phone';
 import { addWorkingDays, addWorkingHours } from '@/lib/sla';
+import { amcVisitsExpected, daysBetween, expiryBucket } from '@/lib/reminders';
 import { LEAD_MACHINE, ORDER_MACHINE, PROJECT_MACHINE, REFERRAL_MACHINE, assertTransition, canTransition } from '@/lib/state';
 import { DEFAULT_ROLE_PERMISSIONS, PERMISSIONS } from '@/lib/permissions';
 import { THEMES, DEFAULT_THEME } from '@/lib/themes';
@@ -120,6 +121,35 @@ describe('phone, SLA and formatting', () => {
   });
   it('formats rupees with Indian grouping in every language', () => {
     for (const locale of ['en', 'hi', 'mr'] as const) expect(formatINR('600000', locale)).toBe('₹6,00,000');
+  });
+});
+
+describe('reminder rules (spec 13)', () => {
+  it('alerts once per expiry threshold, never before the window or after expiry', () => {
+    const t = [30, 7, 1];
+    expect(expiryBucket(45, t)).toBeNull();
+    expect(expiryBucket(30, t)).toBe(30);
+    expect(expiryBucket(12, t)).toBe(30);
+    expect(expiryBucket(7, t)).toBe(7);
+    expect(expiryBucket(3, t)).toBe(7);
+    expect(expiryBucket(1, t)).toBe(1);
+    expect(expiryBucket(0, t)).toBe(1);
+    expect(expiryBucket(-1, t)).toBeNull();
+    expect(expiryBucket(5, [])).toBeNull();
+  });
+  it('counts calendar days between dates', () => {
+    expect(daysBetween('2026-11-12', '2026-11-13')).toBe(1);
+    expect(daysBetween('2026-02-27', '2026-03-02')).toBe(3);
+    expect(daysBetween('2026-11-12', '2026-11-12')).toBe(0);
+  });
+  it('spreads AMC visits evenly over the contract term and rounds down', () => {
+    expect(amcVisitsExpected(4, '2026-01-01', '2027-01-01', '2026-01-01')).toBe(0);
+    expect(amcVisitsExpected(4, '2026-01-01', '2027-01-01', '2026-03-31')).toBe(0);
+    expect(amcVisitsExpected(4, '2026-01-01', '2027-01-01', '2026-04-03')).toBe(1);
+    expect(amcVisitsExpected(4, '2026-01-01', '2027-01-01', '2026-07-05')).toBe(2);
+    expect(amcVisitsExpected(4, '2026-01-01', '2027-01-01', '2030-01-01')).toBe(4);
+    expect(amcVisitsExpected(12, '2026-01-01', '2026-07-01', '2026-12-31')).toBe(6); // six months at 12 a year
+    expect(amcVisitsExpected(4, '2026-06-01', '2026-06-01', '2026-06-02')).toBe(0);
   });
 });
 

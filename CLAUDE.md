@@ -47,8 +47,8 @@ Demo sign-in buttons on `/login` exist only when `AUTH_SANDBOX=true`.
 ## Status (update this section as work proceeds)
 Done: schema + RLS, all services, demo seed, public site, theme system and 10 design options, all admin / partner / customer
 screens, technician offline app, REST API, full en/hi/mr dictionaries, browser smoke for four roles in three languages,
-offline e2e (`npm run e2e`), vitest suite (`tests/unit.test.ts`, `tests/integration.test.ts` - 49 tests, needs Postgres),
-lint clean, README, `docs/` and CI workflow.
+offline e2e (`npm run e2e`), vitest suite (`tests/unit.test.ts`, `tests/integration.test.ts` - 55 tests, needs Postgres),
+lint clean, README, `docs/` and CI workflow, scheduled reminders (`src/server/services/reminders.ts`, run by `/api/jobs/housekeeping`).
 
 Before every push run: `npx tsc --noEmit && npm run lint && npx tsx scripts/i18n-scan.ts && npm test && npx next build`.
 `npm test` wipes `TEST_DATABASE_URL`. `npm run e2e` needs freshly seeded demo data and a running server.
