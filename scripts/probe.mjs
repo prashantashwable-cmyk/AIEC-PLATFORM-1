@@ -5,7 +5,6 @@ const base = (process.env.BASE_URL ?? 'http://localhost:3000').replace(/\/$/, ''
 const isLocal = /localhost|127\.0\.0\.1/.test(base);
 let failed = 0;
 const check = (name, ok, detail = '') => { console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${detail ? ` — ${detail}` : ''}`); if (!ok) failed++; };
-const warn = (name, detail) => console.log(`WARN ${name} — ${detail}`);
 const get = (path, init = {}) => fetch(base + path, { redirect: 'manual', ...init });
 
 // Headers
@@ -16,6 +15,19 @@ for (const [h, expected] of [['x-frame-options', 'DENY'], ['x-content-type-optio
   check(`header ${h}`, Boolean(value) && (expected === null || value === expected), String(value));
 }
 check('no X-Powered-By header', !home.headers.get('x-powered-by'));
+
+// Content-Security-Policy with a fresh nonce on every page request
+const csp = home.headers.get('content-security-policy') ?? '';
+const nonceOf = (value) => /'nonce-([^']+)'/.exec(value)?.[1];
+const htmlA = await home.text();
+const second = await get('/');
+const nonceA = nonceOf(csp);
+const nonceB = nonceOf(second.headers.get('content-security-policy') ?? '');
+check('Content-Security-Policy is set with a nonce', Boolean(nonceA), csp.slice(0, 60));
+check('script-src allows no unsafe-inline and no wildcard', /script-src [^;]*/.test(csp) && !/script-src [^;]*('unsafe-inline'|\*)/.test(csp));
+check('CSP forbids framing, plugins and foreign form targets', /frame-ancestors 'none'/.test(csp) && /object-src 'none'/.test(csp) && /form-action 'self'/.test(csp));
+check('the nonce is different on every request', Boolean(nonceA) && nonceA !== nonceB);
+check('the page scripts carry the nonce', Boolean(nonceA) && htmlA.includes(`nonce="${nonceA}"`));
 if (!isLocal) check('Strict-Transport-Security on a deployed URL', Boolean(home.headers.get('strict-transport-security')));
 if (!isLocal && !base.startsWith('https://')) check('deployed URL uses https', false, base);
 
@@ -62,6 +74,5 @@ else check('sandbox sign-in is off on a deployed URL', !sandbox, 'demo buttons o
 
 // Unknown paths
 check('unknown page returns 404', (await get('/no-such-page-' + Date.now())).status === 404);
-if (isLocal) warn('Content-Security-Policy', 'not set (see docs/security.md, known gaps)');
 console.log(failed ? `PROBE FAILED (${failed})` : 'PROBE PASSED');
 process.exit(failed ? 1 : 0);
