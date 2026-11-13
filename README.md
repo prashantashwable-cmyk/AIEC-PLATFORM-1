@@ -89,6 +89,7 @@ npm test                          # unit + integration tests (wipes and uses TES
 npm run build && npm start        # production build
 node scripts/smoke.mjs SUPER_ADMIN mr -   # visits every navigation link as a demo role in a language
 npm run e2e                       # technician offline flow in a real browser (needs freshly seeded data)
+BASE_URL=https://your-host npm run probe   # black-box security probe, safe to run against a deployed URL
 ```
 
 CI (`.github/workflows/ci.yml`) runs typecheck, lint, the translation scan, the tests against a

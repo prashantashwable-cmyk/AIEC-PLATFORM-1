@@ -58,6 +58,7 @@ no public file URLs. Virus scanning is not implemented.
   state-changing requests; cookies are `SameSite=Lax`.
 - The reconciliation webhook requires an HMAC-SHA256 signature compared in constant time, and the
   housekeeping endpoint requires the application secret.
+- Responses carry `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, a strict referrer policy, a permissions policy, `Cross-Origin-Opener-Policy: same-origin` and `Strict-Transport-Security` (effective once served over https). `scripts/probe.mjs` checks these and the anonymous-access rules against any URL.
 - Secrets are read from environment variables. `.env.local` is ignored by git; `.env.example`
   contains names only.
 
@@ -73,6 +74,7 @@ no public file URLs. Virus scanning is not implemented.
 
 ## Known gaps
 
+- No Content-Security-Policy yet: Next.js inline scripts need per-request nonces, which is a separate piece of work. Add one before go-live.
 - No rate limiting apart from one-time codes; put the app behind a gateway or WAF.
 - No multi-factor sign-in for staff.
 - No automatic data-retention or deletion job; deletion requests are handled manually.
