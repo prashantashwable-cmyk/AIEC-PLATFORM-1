@@ -23,6 +23,52 @@ come from sequences.
 | Service | `warranties`, `amc_contracts`, `service_tickets`, `maintenance_visits`, `disputes` |
 | Governance | `notifications`, `outbound_messages`, `audit_logs`, `system_settings`, `reminder_log` |
 
+## Entity relationship overview
+
+The main relationships (not every table or column). Every tenant table also carries the company or
+customer it belongs to, which row-level security uses.
+
+```mermaid
+erDiagram
+  users ||--o{ user_roles : has
+  companies ||--o{ user_roles : employs
+  companies ||--o{ company_licenses : holds
+  companies ||--o{ company_insurance_policies : holds
+  companies ||--o{ partner_capabilities : declares
+  companies ||--o{ partner_service_areas : serves
+  customers ||--o{ leads : raises
+  zones ||--o{ leads : locates
+  leads ||--o{ lead_events : records
+  leads ||--o{ lead_duplicate_candidates : "may duplicate"
+  leads ||--o| site_surveys : "is surveyed by"
+  leads ||--o{ partner_matches : "is matched to"
+  companies ||--o{ partner_matches : "is invited by"
+  leads ||--o{ quotations : receives
+  companies ||--o{ quotations : submits
+  quotations ||--o{ quotation_versions : versions
+  quotation_versions ||--o{ quotation_milestones : "pays in"
+  quotations ||--o| orders : "selected becomes"
+  orders ||--o{ order_state_events : records
+  orders ||--o| projects : "confirmed opens"
+  projects ||--o{ project_milestones : "freezes"
+  projects ||--o{ project_tasks : plans
+  projects ||--o{ project_team_assignments : staffs
+  projects ||--o{ partner_collections : "is paid by"
+  partner_collections ||--o{ collection_evidence : "is proved by"
+  partner_collections ||--o| commission_ledger : "earns once"
+  commission_ledger }o--o| commission_invoices : "is invoiced on"
+  projects ||--o{ compliance_documents : requires
+  projects ||--o{ qc_inspections : "is inspected by"
+  qc_inspections ||--o{ qc_defects : finds
+  projects ||--o{ safety_incidents : reports
+  projects ||--o| warranties : covers
+  projects ||--o{ amc_contracts : maintains
+  customers ||--o{ service_tickets : raises
+  customers ||--o{ finance_referrals : consents
+  finance_referrals ||--o{ finance_handoffs : "is handed off by"
+  lender_partners ||--o{ finance_handoffs : receives
+```
+
 ## State machines
 
 Defined once in `src/lib/state.ts` and enforced by the services; the database CHECK constraints

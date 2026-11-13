@@ -127,8 +127,11 @@ URL). Set the variables from `.env.example`, run `npm run db:migrate`, then `npm
 
 ## Documentation
 
+- `docs/business-blueprint.md` – locked business decisions, revenue model and boundaries
+- `docs/product-requirements.md` – specification requirements mapped to screens and services
+- `docs/operations-sops.md` – draft operating procedures for the pilot
 - `docs/architecture.md` – how the code is organised and why
-- `docs/data-model.md` – tables, states and database guards
+- `docs/data-model.md` – tables, relationship diagram, states and database guards
 - `docs/api.md` – REST routes, webhook, offline sync
 - `docs/security.md` – authentication, permissions, tenant isolation, privacy
 - `docs/compliance-register.md` – regulatory sources and how gates are enforced
