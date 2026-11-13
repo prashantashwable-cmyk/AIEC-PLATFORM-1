@@ -22,6 +22,7 @@ The product specification is `AIEC_National_Elevator_Marketplace_Claude_Code_Mas
 - `db/migrations/*.sql` — schema, RLS, functions. `scripts/migrate.ts` applies them and syncs reference data. `scripts/seed.ts` builds demo data through the real services.
 - `src/components/ui` (primitives + `form.tsx` ActionForm), `src/components/views` (shared screens), `src/components/shell`, `src/components/tech` (offline queue UI).
 - `src/proxy.ts` sets the per-request Content-Security-Policy nonce; every page must stay dynamically rendered (the root layout reads cookies, so it is). Do not add inline scripts, inline event handlers or statically generated pages without checking `npm run probe` and the smoke script (CSP violations show up as console errors).
+- GitHub Pages cannot run the app (needs Node + PostgreSQL). `.github/workflows/pages.yml` publishes only a static preview of the public pages (`scripts/pages-preview.mjs`, checked by `scripts/pages-check.mjs`); do not present it as the application.
 - API: `src/app/api/[...path]/route.ts` (spec 11.5 routes), `/api/files/[id]`, `/api/tech/sync`, `/api/webhooks/reconciliation`, `/api/jobs/housekeeping`.
 
 ## i18n rules

@@ -113,6 +113,20 @@ Any Node.js host with a PostgreSQL database works (the connection string may be 
 URL). Set the variables from `.env.example`, run `npm run db:migrate`, then `npm run build` and
 `npm start`. Do **not** run the seed script in production.
 
+### GitHub Pages (preview only)
+
+GitHub Pages serves static files only, so **the application cannot run on github.io**: it needs a
+Node.js server and PostgreSQL (sign-in, forms, server actions and the four workspaces all run on the
+server). What can be published there is a static preview of the public pages in English, Hindi and
+Marathi, with a notice that the application itself is not running.
+
+- `.github/workflows/pages.yml` builds the app, renders the public pages (`scripts/pages-preview.mjs`), checks the static copy (`scripts/pages-check.mjs`) and deploys it. On pull requests it only builds and checks.
+- One-time setup by a repository admin: **Settings → Pages → Build and deployment → Source: GitHub Actions**. The deploy job runs on pushes to `main` (or run the workflow by hand); GitHub's default rule for the `github-pages` environment only allows deployments from `main`.
+- The site appears at `https://<owner>.github.io/<repository>/`. Pages from a private repository need a GitHub plan that supports it, and the published site is public.
+- Locally: start the app, then `PAGES_BASE=/<repository> node scripts/pages-preview.mjs dist-pages`.
+
+To run the real application, use a Node.js host with PostgreSQL (see Deployment above).
+
 ### Before going live
 
 1. Set `AUTH_SANDBOX=false` and connect an SMS provider for one-time codes. Until then nobody can sign in outside the sandbox.

@@ -56,6 +56,7 @@ services and row-level security the application uses.
 | `node scripts/smoke.mjs <ROLE> <en\|hi\|mr> -` | Signs in as a demo role and opens every navigation link; fails on HTTP errors, console errors, not-found screens, horizontal overflow or untranslated keys |
 | `node scripts/smoke.mjs <ROLE> <locale> <dir> /path /path@mobile` | Same for specific pages, with screenshots |
 | `BASE_URL=<url> npm run probe` | Black-box probe that needs no credentials and writes nothing, so it can run against a deployed URL: security headers (including the per-request Content-Security-Policy nonce), anonymous access to every workspace and API, forged session cookies, cross-origin writes, bad webhook signatures, housekeeping without the secret, and (for non-local URLs) that https, HSTS and sandbox-off hold |
+| `node scripts/pages-check.mjs <url>` | The static GitHub Pages preview, served from any static server with JavaScript off: every page in three languages loads at desktop and phone width, all assets load, no scripts remain, language links and the links to the notice page work (run by `.github/workflows/pages.yml`) |
 | `npm run e2e` | Technician flow in a mobile-sized browser: go offline, check in and start a task, confirm nothing reached the server, reconnect, confirm each record exists once, replay the queue and confirm nothing is duplicated |
 | `LOCALES=en,hi,mr node scripts/shot.mjs <dir> name=/path` | Screenshots of public pages |
 
