@@ -52,8 +52,12 @@ jobs:
           python3 -m http.server 8099 --directory _site > /dev/null 2>&1 &
           sleep 2
           node scripts/pages-check.mjs "http://localhost:8099$BASE"
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      # Only needed to deploy. On pull requests the build and the check above are the whole job, so the
+      # run stays green before an admin has switched Pages on.
+      - if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist-pages
 
